@@ -33,7 +33,7 @@ public class Memory {
         }
     }
     public BitSet fetch(int index) {
-        BitSet memoryChunk = memory[index];
+        BitSet memoryChunk = this.memory[index];
         return memoryChunk;
     }
 }
