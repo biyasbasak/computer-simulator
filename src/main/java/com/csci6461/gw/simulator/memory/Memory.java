@@ -18,7 +18,6 @@ public class Memory {
     public void initialize() {
         for (int i = 0; i< MAX_MEMORY_SIZE; i++) {
             this.memory[i] = new BitSet(MAX_WORD_SIZE);
-            this.data.setValue(new BitSet(MAX_WORD_SIZE));
         }
     }
     public void set(int index, String word) {
