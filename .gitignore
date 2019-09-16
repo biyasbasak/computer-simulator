@@ -6,6 +6,7 @@ gradle-app.setting
 .gradletasknamecache
 
 # eclipse generated
+.vscode
 .idea/
 .project
 .settings/
