@@ -32,8 +32,8 @@ public class Memory {
             memoryChunk.set(i, bool);
         }
     }
-    public String fetch(int index) {
+    public BitSet fetch(int index) {
         BitSet memoryChunk = memory[index];
-        return memoryChunk.toString();
+        return memoryChunk;
     }
 }
