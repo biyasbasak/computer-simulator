@@ -1,8 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.GridPane?>
-
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<GridPane fx:controller="com.csci6461.gw.simulator.ui.Controller"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="664.0" minWidth="10.0" prefWidth="600.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="635.0" minWidth="10.0" prefWidth="600.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="207.0" minHeight="10.0" prefHeight="107.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="575.0" minHeight="10.0" prefHeight="404.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="285.0" minHeight="10.0" prefHeight="285.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <BorderPane prefHeight="452.0" prefWidth="600.0" GridPane.rowIndex="1">
+         <top>
+            <HBox prefHeight="33.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Registers">
+                     <font>
+                        <Font size="26.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </top>
+         <center>
+            <TableView prefHeight="356.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+              <columns>
+                <TableColumn prefWidth="62.0" text="ID" />
+                <TableColumn prefWidth="142.0" text="Register Name" />
+                <TableColumn prefWidth="395.0" text="16 bits representation" />
+              </columns>
+            </TableView>
+         </center>
+      </BorderPane>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <top>
+            <HBox prefHeight="33.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Memorys">
+                     <font>
+                        <Font size="26.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </top>
+         <center>
+            <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <columns>
+                <TableColumn prefWidth="267.0" text="ID" />
+                <TableColumn prefWidth="331.0" text="16 bits representation" />
+              </columns>
+            </TableView>
+         </center>
+      </BorderPane>
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label text="Test">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+            <Button mnemonicParsing="false" text="Program 1">
+               <HBox.margin>
+                  <Insets top="40.0" />
+               </HBox.margin></Button>
+            <Button mnemonicParsing="false" text="Program 2">
+               <HBox.margin>
+                  <Insets left="15.0" top="40.0" />
+               </HBox.margin></Button>
+            <Button mnemonicParsing="false" text="Program3">
+               <HBox.margin>
+                  <Insets left="15.0" top="40.0" />
+               </HBox.margin></Button>
+            <Button mnemonicParsing="false" text="Program 4">
+               <HBox.margin>
+                  <Insets left="15.0" top="40.0" />
+               </HBox.margin></Button>
+            <Button mnemonicParsing="false" text="Button">
+               <HBox.margin>
+                  <Insets left="15.0" top="40.0" />
+               </HBox.margin></Button>
+            <Button mnemonicParsing="false" text="Button">
+               <HBox.margin>
+                  <Insets left="15.0" top="40.0" />
+               </HBox.margin></Button>
+         </children>
+      </HBox>
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="11.0" GridPane.columnIndex="1">
+         <children>
+            <Label text="Run">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+            <VBox prefHeight="109.0" prefWidth="109.0">
+               <children>
+                  <Button mnemonicParsing="false" text="Run Binary">
+                     <VBox.margin>
+                        <Insets left="10.0" top="10.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="107.0" text="Run Assembly">
+                     <VBox.margin>
+                        <Insets left="10.0" top="40.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+            <VBox prefHeight="109.0" prefWidth="395.0">
+               <children>
+                  <TextField>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <TextField>
+                     <VBox.margin>
+                        <Insets top="40.0" />
+                     </VBox.margin>
+                  </TextField>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+         <top>
+            <HBox prefHeight="34.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Log Information">
+                     <font>
+                        <Font size="26.0" />
+                     </font>
+                  </Label>
+                  <Button mnemonicParsing="false" text="Clear">
+                     <HBox.margin>
+                        <Insets left="470.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </top>
+         <center>
+            <ScrollPane prefHeight="251.0" prefWidth="1180.0" BorderPane.alignment="CENTER">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="248.0" prefWidth="1180.0">
+                     <children>
+                        <TextFlow prefHeight="248.0" prefWidth="1180.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
+         </center>
+      </BorderPane>
+   </children>
 </GridPane>
