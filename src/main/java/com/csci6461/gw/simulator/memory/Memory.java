@@ -8,17 +8,32 @@ public class Memory {
     private static final int MAX_WORD_SIZE = 16;
     private final int memorySize;
     private final int wordSize;
-    private static BitSet[] memory = null;
+    private BitSet[] memory = null;
 
     public Memory() {
         this.memorySize =  MAX_MEMORY_SIZE;
         this.wordSize = MAX_WORD_SIZE;
+        this.memory = new BitSet[MAX_MEMORY_SIZE];
     }
     public void initialize() {
-        memory = new BitSet[MAX_MEMORY_SIZE];
         for (int i = 0; i< MAX_MEMORY_SIZE; i++) {
-            memory[i] = new BitSet(MAX_WORD_SIZE);
+            this.memory[i] = new BitSet(MAX_WORD_SIZE);
+            this.data.setValue(new BitSet(MAX_WORD_SIZE));
         }
     }
-
+    public void set(int index, String word) {
+        if (word.length() > this.wordSize) {
+            System.out.println("Error: word size exceeds the word size limit supported by the memory");
+        }
+        BitSet memoryChunk = this.memory[index];
+        for (int i = 0; i < word.length(); i++) {
+            char bit = word.charAt(i);
+            boolean bool = Character.getNumericValue(bit) == 1;
+            memoryChunk.set(i, bool);
+        }
+    }
+    public String fetch(int index) {
+        BitSet memoryChunk = memory[index];
+        return memoryChunk.toString();
+    }
 }
