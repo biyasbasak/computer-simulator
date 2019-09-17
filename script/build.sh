@@ -1,13 +1,12 @@
 #!/bin/bash
 
 DIR=`dirname ${BASH_SOURCE[0]}`
-
+  
+pushd "$DIR/../"
 if [ "$1" == "test" ]; then   # test
-  echo "Test not implemented."
-  exit 1
+  ./gradlew test
 else  # build
-  pushd "$DIR/../"
   ./gradlew build -x test   # skip tests
-  popd
 fi 
+popd
 

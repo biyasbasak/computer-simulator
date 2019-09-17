@@ -17,6 +17,7 @@ public class BitOperations {
                 bits.set(idx);
             }
             num /= 2;
+            idx += 1;
         }
         return bits;
     }

@@ -17,6 +17,12 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+        // Use CLI mode if there are arguments
+        if(args.length > 0) {
+            // TODO
+            return;
+        } else {
+            launch(args);
+        }
     }
 }

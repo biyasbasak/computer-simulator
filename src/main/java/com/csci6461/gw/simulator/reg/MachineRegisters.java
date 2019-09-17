@@ -1,9 +1,15 @@
 package com.csci6461.gw.simulator.reg;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Class representing all the registers the CPU need.
  */
 public class MachineRegisters {
+
+    private static final Logger LOG = LogManager.getLogger("sim.register");
+
     public static final int GR_COUNT = 4;
     public static final int GR_BITS = 16;
     public static final int IX_COUNT = 4;
@@ -63,17 +69,16 @@ public class MachineRegisters {
      * Dump the entire state of the registers.
      */
     void dumpState() {
-        System.out.println("================= Machine registers dump ===================");
-        System.out.println("============================================================");
-        System.out.printf("PC: %04X, CC: %01X, IR: %04X, MAR: %04X, MBR: %04X, MFR: %04X\n", _PC.value(), _CC.value(), _IR.value(), _MAR.value(), _MBR.value(), _MFR.value());
+        LOG.debug("================= Machine registers dump ===================");
+        LOG.debug("============================================================");
+        LOG.debug("PC: %04X, CC: %01X, IR: %04X, MAR: %04X, MBR: %04X, MFR: %04X", _PC.value(), _CC.value(), _IR.value(), _MAR.value(), _MBR.value(), _MFR.value());
         for(int i = 0; i < GR_COUNT; i++) {
-            System.out.printf("%s: %04X, ", GR_NAMES[i], _GR[i].value());
+            LOG.debug("%s: %04X", GR_NAMES[i], _GR[i].value());
         }
         for(int i = 0; i < IX_COUNT; i++) {
-            System.out.printf("%s: %04X, ", IX_NAMES[i], _IX[i].value());
+            LOG.debug("%s: %04X", IX_NAMES[i], _IX[i].value());
         }
-        System.out.print('\n');
-        System.out.println("============================================================");
-        System.out.println("============================================================");
+        LOG.debug("============================================================");
+        LOG.debug("============================================================");
     }
 }
