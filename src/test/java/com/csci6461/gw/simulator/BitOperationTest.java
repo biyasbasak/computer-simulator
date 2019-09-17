@@ -9,7 +9,7 @@ public class BitOperationTest {
     @Test
     public void testL2B() {
         int value = 0x449, idx = 0;
-        BitSet b = BitOperations.longToBits(value);
+        BitSet b = BitOperations.intToBits(value);
         while(value != 0) {
             int u = b.get(idx) ? 1 : 0;
             int v = value & 1;
@@ -26,8 +26,8 @@ public class BitOperationTest {
         for(int bit : bits) {
             b.set(bit);
         }
-        long value = BitOperations.bitsToLong(b);
-        assertTrue(value == 149l);
+        int value = BitOperations.bitsToInt(b);
+        assertTrue(value == 149);
     }
 }
 

@@ -9,14 +9,14 @@ public class BitOperations {
     /**
      * Convert a number to a BitSet
      */
-    public static BitSet longToBits(long num) {
+    public static BitSet intToBits(int num) {
         BitSet bits = new BitSet();
         int idx = 0;
         while(num != 0) {
             if(num % 2 == 1) {
                 bits.set(idx);
             }
-            num /= 2;
+            num >>>= 1;
             idx += 1;
         }
         return bits;
@@ -25,8 +25,8 @@ public class BitOperations {
     /**
      * Convert a BitSet to a number
      */
-    public static long bitsToLong(BitSet bits) {
-        long num = 0;
+    public static int bitsToInt(BitSet bits) {
+        int num = 0;
         for(int i = 0; i < bits.size(); i++) {
             if(bits.get(i)) {
                 num = num | (1 << i);

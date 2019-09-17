@@ -24,47 +24,47 @@ public class Element extends BitSet {
     /**
      * Wrap the number around within the bound of {@link Element#_nbits}.
      */
-    private long wraparound(long value) {
+    private int wraparound(int value) {
         return value & ((1 << _nbits) - 1);
     }
 
     /**
      * Element addition: self = self + addend.
      */
-    public void add(long addend) {
-        long value = wraparound(BitOperations.bitsToLong(this) + addend);
-        this.set(BitOperations.longToBits(value));
+    public void add(int addend) {
+        int value = wraparound(BitOperations.bitsToInt(this) + addend);
+        this.set(BitOperations.intToBits(value));
     }
 
     /**
      * Element subtraction: self = self - subtraction.
      */
-    public void sub(long subtraction) {
-        long value = wraparound(BitOperations.bitsToLong(this) - subtraction);
-        this.set(BitOperations.longToBits(value));
+    public void sub(int subtraction) {
+        int value = wraparound(BitOperations.bitsToInt(this) - subtraction);
+        this.set(BitOperations.intToBits(value));
     }
 
     /**
      * Element multiplication: self = self * multiplier.
      */
-    public void mult(long multiplier) {
-        long value = wraparound(BitOperations.bitsToLong(this) * multiplier);
-        this.set(BitOperations.longToBits(value));
+    public void mult(int multiplier) {
+        int value = wraparound(BitOperations.bitsToInt(this) * multiplier);
+        this.set(BitOperations.intToBits(value));
     }
 
     /**
      * Element division: self = self / divisor.
      */
-    public void div(long divisor) {
-        long value = wraparound(BitOperations.bitsToLong(this) / divisor);
-        this.set(BitOperations.longToBits(value));
+    public void div(int divisor) {
+        int value = wraparound(BitOperations.bitsToInt(this) / divisor);
+        this.set(BitOperations.intToBits(value));
     }
 
     /**
      * Get the integer representation of the element.
      */
-    public long value() {
-        return BitOperations.bitsToLong(this);
+    public int value() {
+        return BitOperations.bitsToInt(this);
     }
 
     /**
@@ -78,7 +78,7 @@ public class Element extends BitSet {
     /**
      * Set a element by its integer representation.
      */
-    public void setByValue(long value) {
-        this.set(BitOperations.longToBits(wraparound(value)));
+    public void setByValue(int value) {
+        this.set(BitOperations.intToBits(wraparound(value)));
     }
 }
