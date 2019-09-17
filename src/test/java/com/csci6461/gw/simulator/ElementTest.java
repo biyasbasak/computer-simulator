@@ -9,7 +9,7 @@ public class ElementTest {
     @Test
     public void testElement() {
         Element a = new Element(8);
-        a.value(5);
+        a.setByValue(5);
         a.add(3);
         assertTrue(a.value() == 8l);
         a.sub(2);
@@ -23,7 +23,7 @@ public class ElementTest {
     @Test
     public void testWrapAround() {
         Element w = new Element(4);
-        w.value(15);
+        w.setByValue(15);
         w.add(1);
         assertTrue(w.value() == 0l);
     }
@@ -35,7 +35,7 @@ public class ElementTest {
         b.set(0);
         b.set(2);
         b.set(4);
-        w.value(b);
+        w.set(b);
         assertTrue(w.value() == 21l);
     }
 }

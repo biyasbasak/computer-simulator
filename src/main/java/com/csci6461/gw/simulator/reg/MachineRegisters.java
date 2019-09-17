@@ -53,16 +53,62 @@ public class MachineRegisters {
         _IR = new Register("IR", 16);
     }
 
+    /**
+     * 
+     */
     Register getGeneralRegister(int index) {
         return _GR[index];
     }
 
+    /**
+     * 
+     */
     Register getIndexRegister(int index) {
         return _IX[index];
     }
 
+    /**
+     * PC = PC + 1
+     */
     void advance() {
         _PC.add(1);
+    }
+
+    /**
+     * Set overflow condition
+     */
+    void setOverflow(Boolean overflow) {
+        _CC.set(0, overflow);
+    }
+
+    /**
+     * Set underflow condition
+     */
+    void setUnderflow(Boolean underflow) {
+        _CC.set(1, underflow);
+    }
+
+    /**
+     * Set division by zero condition
+     */
+    void setDivZero(Boolean divByZero) {
+        _CC.set(2, divByZero);
+    }
+
+    /**
+     * Set eq condition
+     */
+    void setEqual(Boolean equal) {
+        _CC.set(3, equal);
+    }
+
+    /**
+     * Set machine fault type
+     */
+    void setFault(int fault) {
+        assert fault >= 1 && fault <= 4;
+        _MFR.clear();
+        _MFR.set(fault - 1, true);
     }
 
     /**
