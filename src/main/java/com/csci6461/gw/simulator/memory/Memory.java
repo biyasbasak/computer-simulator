@@ -1,9 +1,8 @@
 package com.csci6461.gw.simulator.memory;
 
-import com.csci6461.gw.simulator.instr.Instruction;
 import com.csci6461.gw.simulator.reg.MachineRegisters;
 import com.csci6461.gw.simulator.reg.Register;
-import com.csci6461.gw.simulator.util.Element; 
+import com.csci6461.gw.simulator.util.Element;
 
 import java.util.BitSet;
 import java.util.HashMap;
@@ -49,15 +48,21 @@ public class Memory {
         if (Integer.parseInt(indirectBit, 2) == 0) {
             if (Integer.parseInt(indexReg, 2) == 0) {
                 effectiveAddress = Integer.parseInt(address, 2);
-                return effectiveAddress;
             } else {
                 Register register = registers.getIndexRegister(Integer.parseInt(indexReg, 2));
-                long registerValue = register.value();
-                // fetch contents of index register
+                int registerValue = register.value();
+                effectiveAddress = registerValue + Integer.parseInt(address, 2);
             }
-
         } else {
-
+            if (Integer.parseInt(indirectBit, 2) == 0) {
+                Element memoryChunk = fetch(Integer.parseInt(address, 2));
+                effectiveAddress =  Integer.parseInt(memoryChunk.toString(), 2);
+            }
+            Register register = registers.getIndexRegister(Integer.parseInt(indexReg, 2));
+            int registerValue = register.value();
+            int registerAndAddressValue = registerValue + Integer.parseInt(address, 2);
+            Element memoryChunk = fetch(registerAndAddressValue);
+            effectiveAddress = Integer.parseInt(memoryChunk.toString(), 2);
         }
         return effectiveAddress;
     }
