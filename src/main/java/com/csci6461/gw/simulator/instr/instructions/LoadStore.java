@@ -6,11 +6,14 @@ import com.csci6461.gw.simulator.memory.Memory;
 import com.csci6461.gw.simulator.reg.MachineRegisters;
 import com.csci6461.gw.simulator.reg.Register;
 
+import java.util.BitSet;
 import java.util.HashMap;
 
 public class LoadStore {
     public static class LDR  extends Instruction{
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
+//            memory.set();
+            int effectiveAddress = memory.calculateEffectiveAddress(registers, this.getInstruction());
         }
     }
 }

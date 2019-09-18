@@ -1,6 +1,11 @@
 package com.csci6461.gw.simulator.memory;
 
+import com.csci6461.gw.simulator.instr.Instruction;
+import com.csci6461.gw.simulator.reg.MachineRegisters;
+import com.csci6461.gw.simulator.reg.Register;
+
 import java.util.BitSet;
+import java.util.HashMap;
 
 public class Memory {
 
@@ -34,5 +39,25 @@ public class Memory {
     public BitSet fetch(int index) {
         BitSet memoryChunk = this.memory[index];
         return memoryChunk;
+    }
+    public int calculateEffectiveAddress(MachineRegisters registers, HashMap<String, String> instruction) {
+        int effectiveAddress = 0;
+        String address = instruction.get("address");
+        String indirectBit = instruction.get("indirectBit");
+        String indexReg = instruction.get("indexReg");
+        if (Integer.parseInt(indirectBit, 2) == 0) {
+            if (Integer.parseInt(indexReg, 2) == 0) {
+                effectiveAddress = Integer.parseInt(address, 2);
+                return effectiveAddress;
+            } else {
+                Register register = registers.getIndexRegister(Integer.parseInt(indexReg, 2));
+                long registerValue = register.value();
+                // fetch contents of index register
+            }
+
+        } else {
+
+        }
+        return effectiveAddress;
     }
 }
