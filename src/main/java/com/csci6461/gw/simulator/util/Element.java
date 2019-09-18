@@ -110,4 +110,14 @@ public class Element extends BitSet {
         }
         return s;
     }
+
+    public static Element fromString(String s, int nbits) {
+        Element e = new Element(nbits);
+        e.set(BitOperations.stringToBits(s));
+        return e;
+    }
+
+    public static Element fromString(String s) {
+        return fromString(s, 16);
+    }
 }

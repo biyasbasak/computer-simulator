@@ -18,7 +18,9 @@ public class MachineRegisters {
     public static final int IX_BITS = 16;
 
     public static final String GR_NAMES[] = { "R0", "R1", "R2", "R3" };
-    public static final String IX_NAMES[] = { "X1", "X2", "X3", "X4" };
+    public static final String IX_NAMES[] = { "X0", "X1", "X2", "X3" };
+
+    public static final String REG_NAMES[] = { "R0", "R1", "R2", "R3", "PC", "CC", "IR", "MAR", "MBR", "MFR", "X1", "X2", "X3" };
 
     /**
      * General registers
