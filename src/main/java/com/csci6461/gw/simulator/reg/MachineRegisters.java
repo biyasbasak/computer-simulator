@@ -56,56 +56,56 @@ public class MachineRegisters {
     /**
      * 
      */
-    Register getGeneralRegister(int index) {
+    public Register getGeneralRegister(int index) {
         return _GR[index];
     }
 
     /**
      * 
      */
-    Register getIndexRegister(int index) {
+    public Register getIndexRegister(int index) {
         return _IX[index];
     }
 
     /**
      * PC = PC + 1
      */
-    void advance() {
+    public void advance() {
         _PC.add(1);
     }
 
     /**
      * Set overflow condition
      */
-    void setOverflow(Boolean overflow) {
+    public void setOverflow(Boolean overflow) {
         _CC.set(0, overflow);
     }
 
     /**
      * Set underflow condition
      */
-    void setUnderflow(Boolean underflow) {
+    public void setUnderflow(Boolean underflow) {
         _CC.set(1, underflow);
     }
 
     /**
      * Set division by zero condition
      */
-    void setDivZero(Boolean divByZero) {
+    public void setDivZero(Boolean divByZero) {
         _CC.set(2, divByZero);
     }
 
     /**
      * Set eq condition
      */
-    void setEqual(Boolean equal) {
+    public void setEqual(Boolean equal) {
         _CC.set(3, equal);
     }
 
     /**
      * Set machine fault type
      */
-    void setFault(int fault) {
+    public void setFault(int fault) {
         assert fault >= 1 && fault <= 4;
         _MFR.clear();
         _MFR.set(fault - 1, true);
@@ -114,7 +114,7 @@ public class MachineRegisters {
     /**
      * Dump the entire state of the registers.
      */
-    void dumpState() {
+    public void dumpState() {
         LOG.debug("================= Machine registers dump ===================");
         LOG.debug("============================================================");
         LOG.debug("PC: %04X, CC: %01X, IR: %04X, MAR: %04X, MBR: %04X, MFR: %04X", _PC.value(), _CC.value(), _IR.value(), _MAR.value(), _MBR.value(), _MFR.value());
