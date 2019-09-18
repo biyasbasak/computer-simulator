@@ -3,6 +3,8 @@ package com.csci6461.gw.simulator.reg;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
+
 /**
  * Class representing all the registers the CPU need.
  */
@@ -29,77 +31,93 @@ public class MachineRegisters {
     private Register _IX[];
 
     /**
-     * Special registers 
+     * Hashmap for simplicity
      */
-    private Register _MAR, _MBR, _MFR, _PC, _CC, _IR;
+    private HashMap<String, Register> _Regs;
 
     /**
      * Class constructor
      */
     public MachineRegisters() {
+        _Regs = new HashMap<>();
+        
+        // general registers
         _GR = new Register[GR_COUNT];
         for(int i = 0; i < GR_COUNT; i++) {
             _GR[i] = new Register(GR_NAMES[i], GR_BITS);
+            _Regs.put(GR_NAMES[i], _GR[i]);
         }
+        
+        // index registers
         _IX = new Register[IX_COUNT];
         for(int i = 0; i < IX_COUNT; i++) {
             _IX[i] = new Register(IX_NAMES[i], IX_BITS);
+            _Regs.put(IX_NAMES[i], _IX[i]);
         }
-        _MAR = new Register("MAR", 16);
-        _MBR = new Register("MBR", 16);
-        _MFR = new Register("MFR", 4);
-        _PC = new Register("PC", 12);
-        _CC = new Register("CC", 4);
-        _IR = new Register("IR", 16);
+     
+        // special registers
+        _Regs.put("PC", new Register("PC", 12));
+        _Regs.put("CC", new Register("CC", 4));
+        _Regs.put("IR", new Register("IR", 16));
+        _Regs.put("MAR", new Register("MAR", 16));
+        _Regs.put("MBR", new Register("MBR", 16));
+        _Regs.put("MFR", new Register("MFR", 16));
     }
 
     /**
-     * 
+     * Get GR.
      */
     public Register getGeneralRegister(int index) {
         return _GR[index];
     }
 
     /**
-     * 
+     * Get IX.
      */
     public Register getIndexRegister(int index) {
         return _IX[index];
     }
 
     /**
+     * 
+     */
+    public HashMap<String, Register> getAllRegisters() {
+        return _Regs;
+    }
+
+    /**
      * PC = PC + 1
      */
     public void advance() {
-        _PC.add(1);
+        _Regs.get("PC").add(1);
     }
 
     /**
      * Set overflow condition
      */
     public void setOverflow(Boolean overflow) {
-        _CC.set(0, overflow);
+        _Regs.get("CC").set(0, overflow);
     }
 
     /**
      * Set underflow condition
      */
     public void setUnderflow(Boolean underflow) {
-        _CC.set(1, underflow);
+        _Regs.get("CC").set(1, underflow);
     }
 
     /**
      * Set division by zero condition
      */
     public void setDivZero(Boolean divByZero) {
-        _CC.set(2, divByZero);
+        _Regs.get("CC").set(2, divByZero);
     }
 
     /**
      * Set eq condition
      */
     public void setEqual(Boolean equal) {
-        _CC.set(3, equal);
+        _Regs.get("CC").set(3, equal);
     }
 
     /**
@@ -107,8 +125,9 @@ public class MachineRegisters {
      */
     public void setFault(int fault) {
         assert fault >= 1 && fault <= 4;
-        _MFR.clear();
-        _MFR.set(fault - 1, true);
+        Register MFR = _Regs.get("MFR");
+        MFR.clear();
+        MFR.set(fault - 1, true);
     }
 
     /**
@@ -117,13 +136,9 @@ public class MachineRegisters {
     public void dumpState() {
         LOG.debug("================= Machine registers dump ===================");
         LOG.debug("============================================================");
-        LOG.debug("PC: %04X, CC: %01X, IR: %04X, MAR: %04X, MBR: %04X, MFR: %04X", _PC.value(), _CC.value(), _IR.value(), _MAR.value(), _MBR.value(), _MFR.value());
-        for(int i = 0; i < GR_COUNT; i++) {
-            LOG.debug("%s: %04X", GR_NAMES[i], _GR[i].value());
-        }
-        for(int i = 0; i < IX_COUNT; i++) {
-            LOG.debug("%s: %04X", IX_NAMES[i], _IX[i].value());
-        }
+        _Regs.forEach((k, v) -> {
+            LOG.debug("%s: %016X", k, v.value());
+        });
         LOG.debug("============================================================");
         LOG.debug("============================================================");
     }
