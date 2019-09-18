@@ -1,5 +1,8 @@
 package com.csci6461.gw.simulator.ui;
 
+import javafx.collections.ListChangeListener;
+import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.Filter;  
 import org.apache.logging.log4j.core.Layout;  
@@ -14,6 +17,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import javafx.application.Platform;
 import javafx.scene.text.TextFlow;
 import javafx.scene.text.Text;
+
 import java.io.Serializable;
 import java.util.concurrent.locks.Lock;  
 import java.util.concurrent.locks.ReadWriteLock;  
@@ -23,6 +27,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @Plugin(name = "LogPrinter", category = "Core", elementType = "appender", printObject = true)
 public class LogPrinter extends AbstractAppender {
     private static TextFlow textFlow;
+    private static ScrollPane scrollPane;
 
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
     private final Lock readLock = rwLock.readLock();
@@ -66,6 +71,13 @@ public class LogPrinter extends AbstractAppender {
     }
 
     public static void setTextFlow(TextFlow tf) {
-        textFlow = tf;
+        tf.getChildren().addListener((ListChangeListener<Node>)((change)->{
+            scrollPane.layout();
+            scrollPane.setVvalue(1.0f);
+        }));
+        LogPrinter.textFlow = tf;
+    }
+    public static void setScrollPane(ScrollPane scp){
+        LogPrinter.scrollPane = scp;
     }
 }

@@ -158,14 +158,8 @@
             </HBox>
          </top>
          <center>
-            <ScrollPane prefHeight="251.0" prefWidth="1180.0" BorderPane.alignment="CENTER">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="248.0" prefWidth="1180.0">
-                     <children>
-                        <TextFlow prefHeight="248.0" prefWidth="1180.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="logFlow"/>
-                     </children>
-                  </AnchorPane>
-               </content>
+            <ScrollPane prefHeight="251.0" prefWidth="1180.0" BorderPane.alignment="CENTER" fx:id="scrollPane">
+               <TextFlow prefHeight="248.0" prefWidth="1180.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="logFlow"/>
             </ScrollPane>
          </center>
       </BorderPane>
