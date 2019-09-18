@@ -12,7 +12,7 @@ public class CPU {
     private MachineRegisters registers;
     private Memory memory;
 
-    CPU() {
+    public CPU() {
         this.registers = new MachineRegisters();
         this.memory = new Memory();
     }
