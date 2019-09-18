@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Decoder {
     public static HashMap<String, String> decode(String word) {
-        HashMap<String, String> instruction = null;
+        HashMap<String, String> instruction = new HashMap<>();
         instruction.put("opCode", word.substring(0,6));
         instruction.put("reg", word.substring(6,8));
         instruction.put("indexReg", word.substring(8, 10));

@@ -1,7 +1,6 @@
 package com.csci6461.gw.simulator.cpu;
 
 import com.csci6461.gw.simulator.instr.Decoder;
-import com.csci6461.gw.simulator.instr.Instruction;
 import com.csci6461.gw.simulator.instr.instructions.LoadStore;
 import com.csci6461.gw.simulator.reg.MachineRegisters;
 import com.csci6461.gw.simulator.memory.Memory;
@@ -33,6 +32,7 @@ public class CPU {
          */
         String word = "0000011100011111";
         HashMap<String, String> instruction = Decoder.decode(word);
+        execute(instruction);
     }
 
     public void execute(HashMap<String, String> instructionData) {
@@ -40,6 +40,7 @@ public class CPU {
         switch (opCode) {
             case "000001":
                 LoadStore.LDR ldr = new LoadStore.LDR();
+                ldr.setInstruction(instructionData);
                 ldr.execute(this, this.memory, this.registers);
         }
     }

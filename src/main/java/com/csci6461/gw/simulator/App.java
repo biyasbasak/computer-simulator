@@ -1,5 +1,6 @@
 package com.csci6461.gw.simulator;
 
+import com.csci6461.gw.simulator.cpu.CPU;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

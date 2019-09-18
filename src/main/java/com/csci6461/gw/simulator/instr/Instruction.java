@@ -23,7 +23,4 @@ public abstract class Instruction {
         return this.instruction;
     }
 
-    public String disassemble() {
-        return "<undefined>";
-    }
 }

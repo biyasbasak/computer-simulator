@@ -21,8 +21,8 @@ public class Memory {
         this.memory = new Element[MAX_MEMORY_SIZE];
     }
     public void initialize() {
-        for (int i = 0; i< MAX_MEMORY_SIZE; i++) {
-            this.memory[i] = new Element(MAX_WORD_SIZE);
+        for (int i = 0; i< this.memorySize; i++) {
+            this.memory[i] = new Element(this.wordSize);
         }
     }
     public void set(int index, String word) {
@@ -30,11 +30,7 @@ public class Memory {
             System.out.println("Error: word size exceeds the word size limit supported by the memory");
         }
         Element memoryChunk = this.memory[index];
-        for (int i = 0; i < word.length(); i++) {
-            char bit = word.charAt(i);
-            boolean bool = Character.getNumericValue(bit) == 1;
-            memoryChunk.set(i, bool);
-        }
+        memoryChunk.setByValue(Integer.parseInt(word, 2));
     }
     public Element fetch(int index) {
         Element memoryChunk = this.memory[index];
@@ -42,9 +38,19 @@ public class Memory {
     }
     public int calculateEffectiveAddress(MachineRegisters registers, HashMap<String, String> instruction) {
         int effectiveAddress = 0;
+        String opCode = instruction.get("opCode");
         String address = instruction.get("address");
         String indirectBit = instruction.get("indirectBit");
         String indexReg = instruction.get("indexReg");
+        if (Integer.parseInt(opCode, 2) == 41 || Integer.parseInt(opCode, 2) == 41    ) {
+            if (Integer.parseInt(indexReg, 2) == 0) {
+                effectiveAddress = Integer.parseInt(address, 2);
+            } else {
+                Element memoryChunk = fetch(Integer.parseInt(address,2));
+                effectiveAddress = Integer.parseInt(memoryChunk.toString(), 2);
+            }
+            return  effectiveAddress;
+        }
         if (Integer.parseInt(indirectBit, 2) == 0) {
             if (Integer.parseInt(indexReg, 2) == 0) {
                 effectiveAddress = Integer.parseInt(address, 2);
