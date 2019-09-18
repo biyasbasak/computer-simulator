@@ -27,7 +27,7 @@ public class LogPrinter extends AbstractAppender {
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
     private final Lock readLock = rwLock.readLock();
 
-    LogPrinter(String name, Filter filter, Layout<? extends Serializable> layout, final boolean ignoreExceptions) {
+    protected LogPrinter(String name, Filter filter, Layout<? extends Serializable> layout, final boolean ignoreExceptions) {
         super(name, filter, layout, ignoreExceptions);
     }
 
