@@ -3,6 +3,7 @@ package com.csci6461.gw.simulator.memory;
 import com.csci6461.gw.simulator.instr.Instruction;
 import com.csci6461.gw.simulator.reg.MachineRegisters;
 import com.csci6461.gw.simulator.reg.Register;
+import com.csci6461.gw.simulator.util.Element; 
 
 import java.util.BitSet;
 import java.util.HashMap;
@@ -13,31 +14,31 @@ public class Memory {
     private static final int MAX_WORD_SIZE = 16;
     private final int memorySize;
     private final int wordSize;
-    private BitSet[] memory = null;
+    private Element[] memory = null;
 
     public Memory() {
         this.memorySize =  MAX_MEMORY_SIZE;
         this.wordSize = MAX_WORD_SIZE;
-        this.memory = new BitSet[MAX_MEMORY_SIZE];
+        this.memory = new Element[MAX_MEMORY_SIZE];
     }
     public void initialize() {
         for (int i = 0; i< MAX_MEMORY_SIZE; i++) {
-            this.memory[i] = new BitSet(MAX_WORD_SIZE);
+            this.memory[i] = new Element(MAX_WORD_SIZE);
         }
     }
     public void set(int index, String word) {
         if (word.length() > this.wordSize) {
             System.out.println("Error: word size exceeds the word size limit supported by the memory");
         }
-        BitSet memoryChunk = this.memory[index];
+        Element memoryChunk = this.memory[index];
         for (int i = 0; i < word.length(); i++) {
             char bit = word.charAt(i);
             boolean bool = Character.getNumericValue(bit) == 1;
             memoryChunk.set(i, bool);
         }
     }
-    public BitSet fetch(int index) {
-        BitSet memoryChunk = this.memory[index];
+    public Element fetch(int index) {
+        Element memoryChunk = this.memory[index];
         return memoryChunk;
     }
     public int calculateEffectiveAddress(MachineRegisters registers, HashMap<String, String> instruction) {
