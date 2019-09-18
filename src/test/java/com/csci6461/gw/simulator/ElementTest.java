@@ -35,8 +35,9 @@ public class ElementTest {
         b.set(0);
         b.set(2);
         b.set(4);
+        b.set(7);
         w.set(b);
-        assertTrue(w.value() == 21l);
+        assertTrue(w.value() == 169);
     }
 }
 

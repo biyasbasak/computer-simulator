@@ -11,7 +11,7 @@ public class BitOperationTest {
         int value = 0x449, idx = 0;
         BitSet b = BitOperations.intToBits(value);
         while(value != 0) {
-            int u = b.get(idx) ? 1 : 0;
+            int u = b.get(16 - (idx + 1)) ? 1 : 0;
             int v = value & 1;
             assertTrue(u == v);
             value /= 2;
@@ -26,8 +26,17 @@ public class BitOperationTest {
         for(int bit : bits) {
             b.set(bit);
         }
-        int value = BitOperations.bitsToInt(b);
-        assertTrue(value == 149);
+        int value = BitOperations.bitsToInt(b, 8);
+        assertTrue(value == 169);
+    }
+
+    @Test
+    public void testEquality() {
+        BitSet b = new BitSet();
+        int[] bits = {0, 2, 4, 7};
+        for(int bit : bits) {
+            b.set(bit);
+        }
     }
 }
 
