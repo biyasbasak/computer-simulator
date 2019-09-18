@@ -21,12 +21,17 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This is the Controller Class
  * It connects all events between the GUI and back-ends operations
  * And the actions binding
  */
 public class Controller implements Initializable {
+
+    private static Logger LOG = LogManager.getLogger("UI.Controller");
 
     // config the Memory table
     @FXML
@@ -66,6 +71,7 @@ public class Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initializeMemory();
         initializeRegister();
+        LogPrinter.setTextFlow(logFlow);
     }
 
     // Memory Initialization
@@ -78,7 +84,6 @@ public class Controller implements Initializable {
             Element memoryChunk = memory.fetch(i);
             String j = String.valueOf(i);
             memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString()));
-            System.out.println(memoryChunk);
             // memoryTableObservableList.add();
         }
         //BitSet memoryChunk = memory.fetch(1);
@@ -113,10 +118,18 @@ public class Controller implements Initializable {
     @FXML
     private Button runBinaryButton;
 
+    @FXML
+    private Button program2Button;
+
     //
     @FXML
     public void runBinaryCode(){
         System.out.println(binaryInput.getText());
+    }
+
+    @FXML
+    public void onProgram2() {
+        LOG.debug("Program 2 button down.");
     }
 
     // config the log pane Text flow
