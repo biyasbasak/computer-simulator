@@ -63,7 +63,7 @@ public class MachineRegisters {
         _Regs.put("IR", new Register("IR", 16));
         _Regs.put("MAR", new Register("MAR", 16));
         _Regs.put("MBR", new Register("MBR", 16));
-        _Regs.put("MFR", new Register("MFR", 16));
+        _Regs.put("MFR", new Register("MFR", 4));
     }
 
     /**

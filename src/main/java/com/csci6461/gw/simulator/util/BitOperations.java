@@ -61,5 +61,18 @@ public class BitOperations {
         }
         return b;
     }
+
+    /**
+     * Convert a binary string to an integer
+     */
+    public static int stringToInt(String s) {
+        int r = 0, idx = 0;
+        for(int i = s.length() - 1; i >= 0; i--, idx++) {
+            if(s.charAt(i) == '1') {
+                r = r | (1 << idx);
+            }
+        }
+        return r;
+    }
 }
 
