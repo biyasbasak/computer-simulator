@@ -1,5 +1,6 @@
 package com.csci6461.gw.simulator.ui;
 
+import com.csci6461.gw.simulator.cpu.CPU;
 import com.csci6461.gw.simulator.memory.Memory;
 import com.csci6461.gw.simulator.reg.MachineRegisters;
 import com.csci6461.gw.simulator.reg.Register;
@@ -28,6 +29,9 @@ import java.util.ResourceBundle;
  */
 public class Controller implements Initializable {
 
+
+    private CPU cpu = new CPU();
+
     // config the Memory table
     @FXML
     private TableView<MemoryTable> memoryTableView;
@@ -45,7 +49,7 @@ public class Controller implements Initializable {
     );
 
     // get a memory object, for initialization and further usage
-    private Memory memory = new Memory();
+    private Memory memory = cpu.getMemory();
 
     @FXML
     private TableView<RegisterTable> registerTableView;
@@ -59,11 +63,12 @@ public class Controller implements Initializable {
     private ObservableList<RegisterTable> registerTableObservableList = FXCollections.observableArrayList(
 
     );
-    private MachineRegisters register = new MachineRegisters();
+    private MachineRegisters register = cpu.getRegisters();
 
     // Initialize the simulator on starting
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         initializeMemory();
         initializeRegister();
     }
@@ -78,7 +83,6 @@ public class Controller implements Initializable {
             Element memoryChunk = memory.fetch(i);
             String j = String.valueOf(i);
             memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString()));
-            System.out.println(memoryChunk);
             // memoryTableObservableList.add();
         }
         //BitSet memoryChunk = memory.fetch(1);
@@ -104,7 +108,6 @@ public class Controller implements Initializable {
         registerTableView.setItems(registerTableObservableList);
     }
 
-
     // config binary input Textfield
     @FXML
     private TextField binaryInput;
@@ -117,6 +120,14 @@ public class Controller implements Initializable {
     @FXML
     public void runBinaryCode(){
         System.out.println(binaryInput.getText());
+    }
+
+    @FXML
+    private Button program1;
+
+    @FXML
+    public void runProgram1(){
+        cpu.sampleTestProgram();
     }
 
     // config the log pane Text flow
