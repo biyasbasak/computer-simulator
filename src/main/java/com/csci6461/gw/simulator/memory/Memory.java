@@ -42,6 +42,8 @@ public class Memory {
         String address = instruction.get("address");
         String indirectBit = instruction.get("indirectBit");
         String indexReg = instruction.get("indexReg");
+
+        // In case of LDX and STX index Registers are ignored
         if (Integer.parseInt(opCode, 2) == 41 || Integer.parseInt(opCode, 2) == 41    ) {
             if (Integer.parseInt(indexReg, 2) == 0) {
                 effectiveAddress = Integer.parseInt(address, 2);
@@ -51,7 +53,9 @@ public class Memory {
             }
             return  effectiveAddress;
         }
+        // if indirect bit is not set
         if (Integer.parseInt(indirectBit, 2) == 0) {
+            // if index reg is also not set
             if (Integer.parseInt(indexReg, 2) == 0) {
                 effectiveAddress = Integer.parseInt(address, 2);
             } else {
@@ -60,15 +64,16 @@ public class Memory {
                 effectiveAddress = registerValue + Integer.parseInt(address, 2);
             }
         } else {
-            if (Integer.parseInt(indirectBit, 2) == 0) {
+            if (Integer.parseInt(indexReg, 2) == 0) {
                 Element memoryChunk = fetch(Integer.parseInt(address, 2));
                 effectiveAddress =  Integer.parseInt(memoryChunk.toString(), 2);
+            } else {
+                Register register = registers.getIndexRegister(Integer.parseInt(indexReg, 2));
+                int registerValue = register.value();
+                int registerAndAddressValue = registerValue + Integer.parseInt(address, 2);
+                Element memoryChunk = fetch(registerAndAddressValue);
+                effectiveAddress = Integer.parseInt(memoryChunk.toString(), 2);
             }
-            Register register = registers.getIndexRegister(Integer.parseInt(indexReg, 2));
-            int registerValue = register.value();
-            int registerAndAddressValue = registerValue + Integer.parseInt(address, 2);
-            Element memoryChunk = fetch(registerAndAddressValue);
-            effectiveAddress = Integer.parseInt(memoryChunk.toString(), 2);
         }
         return effectiveAddress;
     }
