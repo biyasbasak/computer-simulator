@@ -2,6 +2,7 @@ package com.csci6461.gw.simulator;
 
 import com.csci6461.gw.simulator.instr.Assembler;
 import static com.csci6461.gw.simulator.util.Exceptions.AssemblerException;
+import static com.csci6461.gw.simulator.util.StringOperations.readAllBytes;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -30,7 +31,7 @@ public class AssemblerTest {
         Assembler asm = new Assembler();
 
         try {
-            String asmcode = new String(getClass().getResourceAsStream("/program1.asm").readAllBytes());
+            String asmcode = new String(readAllBytes(getClass().getResourceAsStream("/program1.asm")));
             String[] bitcode = asm.assemble(asmcode);
         } catch(IOException ex) {
             ex.printStackTrace();

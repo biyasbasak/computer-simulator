@@ -2,6 +2,7 @@ package com.csci6461.gw.simulator.instr;
 
 import static com.csci6461.gw.simulator.util.Exceptions.*;
 import static com.csci6461.gw.simulator.util.BitOperations.*;
+import static com.csci6461.gw.simulator.util.StringOperations.*;
 import com.csci6461.gw.simulator.cpu.CPU;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -17,7 +18,7 @@ public class Assembler {
     /**
      * Opcodes by its name.
      */
-    private static final HashMap<String, Integer> OPCODE_LIST = new HashMap<>() {{
+    private static final HashMap<String, Integer> OPCODE_LIST = new HashMap<String, Integer>() {{
        put("HLT", 0);
        put("TRAP", 30);
        put("LDR", 1);
@@ -75,11 +76,11 @@ public class Assembler {
             char c = scan.next().charAt(0);
             if(c == delim) {
                 skipWhitespace(scan);
-                return r.stripTrailing();
+                return rstrip(r);
             }
             r += c;
         }
-        return r.stripTrailing();
+        return rstrip(r);
     }
 
     /**
@@ -102,7 +103,7 @@ public class Assembler {
         int lineno = 0;
 
         while(scan.hasNextLine()) {
-            String line = scan.nextLine().stripTrailing().stripLeading();
+            String line = lstrip(rstrip(scan.nextLine()));
             lineno++;
             if(line.endsWith(":")) {  // a label
                 String labelName = line.substring(0, line.length());
