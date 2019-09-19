@@ -13,3 +13,7 @@ gradle-app.setting
 .classpath
 bin/
 
+# vim swap file
+*.swp
+*.swo
+
