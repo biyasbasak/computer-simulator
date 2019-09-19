@@ -149,7 +149,7 @@
                         <Font size="26.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" text="Clear">
+                  <Button mnemonicParsing="false" text="Clear" fx:id="clear" onAction="#clearLog">
                      <HBox.margin>
                         <Insets left="470.0" top="5.0" />
                      </HBox.margin>

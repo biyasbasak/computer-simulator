@@ -80,4 +80,8 @@ public class LogPrinter extends AbstractAppender {
     public static void setScrollPane(ScrollPane scp){
         LogPrinter.scrollPane = scp;
     }
+
+    public static void clear(){
+        LogPrinter.textFlow.getChildren().clear();
+    }
 }

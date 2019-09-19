@@ -74,6 +74,8 @@ public class Controller implements Initializable {
         initializeRegister();
         LogPrinter.setTextFlow(logFlow);
         LogPrinter.setScrollPane(scrollPane);
+        LOG.info("initialize successful");
+
     }
 
     // Memory Initialization
@@ -86,10 +88,7 @@ public class Controller implements Initializable {
             Element memoryChunk = memory.fetch(i);
             String j = String.valueOf(i);
             memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString()));
-            // memoryTableObservableList.add();
         }
-        //BitSet memoryChunk = memory.fetch(1);
-
         memoryTableView.setItems(memoryTableObservableList);
     }
 
@@ -125,7 +124,7 @@ public class Controller implements Initializable {
     //
     @FXML
     public void runBinaryCode(){
-        System.out.println(binaryInput.getText());
+        LOG.info(binaryInput.getText());
     }
 
     @FXML
@@ -133,11 +132,37 @@ public class Controller implements Initializable {
         LOG.debug("Program 2 button down.");
     }
 
+    @FXML
     private Button program1;
 
     @FXML
     public void runProgram1(){
+        memory.set(31, "1001");
         cpu.sampleTestProgram();
+
+        registerTableView.getItems().clear();
+        memoryTableView.getItems().clear();
+        // update memory
+        for (int i = 0; i < 2048; i++) {
+            Element memoryChunk = memory.fetch(i);
+            String j = String.valueOf(i);
+            memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString()));
+        }
+
+        HashMap<String, Register> allRegisters =  register.getAllRegisters();
+        int index = 0;
+        for(String name : MachineRegisters.REG_NAMES) {
+            String indexStr = Integer.toString(index);
+            Register register = allRegisters.get(name);
+            String registerBinary = register.toString();
+            registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary));
+            index += 1;
+        }
+        // update register
+
+
+
+
     }
 
     // config the log pane Text flow
@@ -147,4 +172,11 @@ public class Controller implements Initializable {
     @FXML
     private ScrollPane scrollPane;
 
+    @FXML
+    private Button clear;
+
+    @FXML
+    public void clearLog(){
+        LogPrinter.clear();
+    }
 }
