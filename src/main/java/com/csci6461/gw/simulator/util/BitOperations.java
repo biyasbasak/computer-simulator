@@ -74,5 +74,21 @@ public class BitOperations {
         }
         return r;
     }
+
+    /**
+     * Convert an integer to an nbits binary string
+     */
+    public static String intToString(int num, int nbits) {
+        String r = Integer.toBinaryString(num);
+        
+        if(r.length() > nbits) {
+            throw new RuntimeException("Integer bitsize larger than nbits");
+        }
+
+        while(r.length() < nbits) {
+            r = "0" + r;
+        }
+        return r;
+    }
 }
 
