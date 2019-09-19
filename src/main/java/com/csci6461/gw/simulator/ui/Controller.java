@@ -5,6 +5,7 @@ import com.csci6461.gw.simulator.memory.Memory;
 import com.csci6461.gw.simulator.reg.MachineRegisters;
 import com.csci6461.gw.simulator.reg.Register;
 import com.csci6461.gw.simulator.util.Element;
+import com.csci6461.gw.simulator.instr.Assembler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,6 +16,8 @@ import javafx.scene.text.TextFlow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -43,7 +46,7 @@ public class Controller implements Initializable {
     private TableColumn<MemoryTable, String> memoryBinary;
     // creat a "observablelist" object to present memory data
     private ObservableList<MemoryTable> memoryTableObservableList = FXCollections.observableArrayList(
-    );
+            );
     // get a memory object, for initialization and further usage
     private Memory memory = cpu.getMemory();
     /**
@@ -59,7 +62,7 @@ public class Controller implements Initializable {
     private TableColumn<RegisterTable, String> registerBinary;
 
     private ObservableList<RegisterTable> registerTableObservableList = FXCollections.observableArrayList(
-    );
+            );
     private MachineRegisters register = cpu.getRegisters();
 
     /**
@@ -95,20 +98,10 @@ public class Controller implements Initializable {
         LOG.info(binaryInput.getText());
     }
 
-    /**
-     * Test pane buttons configuration
-     */
-    // config the Program1 button
-    @FXML
-    private Button program1;
-    // action on clicking the Program1 button
-    @FXML
-    public void runProgram1(){
-        memory.set(31, "1001");
-        cpu.sampleTestProgram();
-
+    private void update() {
         registerTableView.getItems().clear();
         memoryTableView.getItems().clear();
+        
         // update memory
         for (int i = 0; i < 2048; i++) {
             Element memoryChunk = memory.fetch(i);
@@ -127,14 +120,40 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Test pane buttons configuration
+     */
+    // config the Program1 button
+    @FXML
+    private Button program1;
+    // action on clicking the Program1 button
+    @FXML
+    public void runProgram1(){
+        InputStream file = getClass().getResourceAsStream("/programs/program1.asm");
+
+        try {
+            String assembly = new String(file.readAllBytes());
+            Assembler asm = new Assembler();
+            String[] program = asm.assemble(assembly);
+            cpu.loadProgram(program);
+        } catch(IOException ex) {
+            LOG.error("Error reading program1.asm: {}", ex.getMessage());
+            ex.printStackTrace();
+        }
+        LOG.info("Program1 loaded.");
+
+        update();
+    }
+
     @FXML
     private Button stepButton;
 
     @FXML
     private void step(){
-        LOG.info("111111");
-    }
+        cpu.cycle();
 
+        update();
+    }
 
     /**
      * Initialization on starting the application

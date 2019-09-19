@@ -83,7 +83,7 @@ public class Assembler {
         return;
     }
 
-    public String assemble(String source) throws AssemblerException {
+    public String[] assemble(String source) throws AssemblerException {
         Scanner scan = new Scanner(source);
         List<String> result = new ArrayList<>();
         int lineno = 0;
@@ -96,6 +96,8 @@ public class Assembler {
                 labelMap.put(labelName, pc);
             } else if(line.startsWith("!")) {
                 handlePseudoInstruction(lineno, line.substring(1));
+            } else if(line.equals("")) {
+                continue;
             } else {
                 result.add(assembleOne(lineno, line));
                 pc += 1;
@@ -103,7 +105,7 @@ public class Assembler {
         }
 
         scan.close();
-        return String.join("\n", result);
+        return result.toArray(new String[0]);
     }
 
     public void handlePseudoInstruction(int lineno, String line) {

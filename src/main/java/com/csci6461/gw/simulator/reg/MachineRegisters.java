@@ -109,6 +109,13 @@ public class MachineRegisters {
     }
 
     /**
+     * Set the value of PC
+     */
+    public void setPC(int value) {
+        _Regs.get("PC").setByValue(value);
+    }
+
+    /**
      * Set overflow condition
      */
     public void setOverflow(Boolean overflow) {

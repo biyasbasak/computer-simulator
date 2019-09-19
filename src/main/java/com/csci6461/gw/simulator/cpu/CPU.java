@@ -14,6 +14,8 @@ public class CPU {
     private MachineRegisters registers;
     private Memory memory;
 
+    private static final int PROGRAM_BASE = 0x100;
+
     public CPU() {
         this.registers = new MachineRegisters();
         this.memory = new Memory();
@@ -65,6 +67,13 @@ public class CPU {
     private void fetchInstruction() {
         Element ins = memory.fetch(registers.pc());
         registers.getRegister("IR").set(ins);
+    }
+
+    public void loadProgram(String[] program) {
+        for(int i = 0; i < program.length; i++) {
+            memory.set(PROGRAM_BASE + i, program[i]);
+        }
+        registers.setPC(PROGRAM_BASE);
     }
 
     /**

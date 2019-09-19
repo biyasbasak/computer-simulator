@@ -1,12 +1,16 @@
 package com.csci6461.gw.simulator;
 
 import com.csci6461.gw.simulator.instr.Assembler;
+import static com.csci6461.gw.simulator.util.Exceptions.AssemblerException;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class AssemblerTest {
     @Test
-    public void AsmTest() {
+    public void AsmOneLineTest() {
         Assembler asm = new Assembler();
 
         String bitcode = asm.assembleOne(0, "ldr r0, x0, 5");
@@ -17,6 +21,22 @@ public class AssemblerTest {
             assertTrue(bitcode.equals(whitespace_test));
         } catch(RuntimeException ex) {
             System.out.println(ex.getMessage());
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void AsmTest() {
+        Assembler asm = new Assembler();
+
+        try {
+            String asmcode = new String(getClass().getResourceAsStream("/program1.asm").readAllBytes());
+            String[] bitcode = asm.assemble(asmcode);
+        } catch(IOException ex) {
+            ex.printStackTrace();
+            assertTrue(false);
+        } catch(AssemblerException e) {
+            System.err.println(e.getMessage());
             assertTrue(false);
         }
     }

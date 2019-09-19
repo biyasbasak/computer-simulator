@@ -1,0 +1,6 @@
+LDA R0, X0, 17
+STR R0, X0, 25
+LDX X1, 25
+STX X1, 26
+LDR R2, X1, 1
+
