@@ -69,11 +69,11 @@ public class Assembler {
             char c = scan.next().charAt(0);
             if(c == delim) {
                 skipWhitespace(scan);
-                return r;
+                return r.stripTrailing();
             }
             r += c;
         }
-        return r;
+        return r.stripTrailing();
     }
 
     private void skipWhitespace(Scanner scan) {

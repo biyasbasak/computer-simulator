@@ -24,6 +24,11 @@ public class Exceptions {
             this.printStackTrace(new PrintWriter(sw));
             LOG.warn(sw.toString());
         }
+
+        @Override
+        public String getMessage() {
+            return _message;
+        }
     }
 
     public static class AssemblerException extends SimulatorException {
@@ -32,6 +37,11 @@ public class Exceptions {
         public AssemblerException(int lineno, String message) {
             super(message);
             _lineno = lineno;
+        }
+
+        @Override
+        public String getMessage() {
+            return String.format("%d: %s", _lineno, super.getMessage());
         }
     }
 }
