@@ -11,16 +11,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-
-import java.net.URL;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.ResourceBundle;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.net.URL;
+import java.util.HashMap;
+import java.util.ResourceBundle;
 
 /**
  * This is the Controller Class
@@ -32,26 +29,26 @@ public class Controller implements Initializable {
     private static Logger LOG = LogManager.getLogger("UI.Controller");
 
     private CPU cpu = new CPU();
-
+    /**
+     * This is the Memory tableview configuration
+     */
     // config the Memory table
     @FXML
     private TableView<MemoryTable> memoryTableView;
-
     // config the id column of Memory table
     @FXML
     private TableColumn<MemoryTable, String> memoryId;
-
     // config the binary column of Memory table
     @FXML
     private TableColumn<MemoryTable, String> memoryBinary;
-
     // creat a "observablelist" object to present memory data
     private ObservableList<MemoryTable> memoryTableObservableList = FXCollections.observableArrayList(
     );
-
     // get a memory object, for initialization and further usage
     private Memory memory = cpu.getMemory();
-
+    /**
+     * This is the Memory tableview configuration
+     */
     @FXML
     private TableView<RegisterTable> registerTableView;
     @FXML
@@ -62,79 +59,49 @@ public class Controller implements Initializable {
     private TableColumn<RegisterTable, String> registerBinary;
 
     private ObservableList<RegisterTable> registerTableObservableList = FXCollections.observableArrayList(
-
     );
     private MachineRegisters register = cpu.getRegisters();
 
-    // Initialize the simulator on starting
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        initializeMemory();
-        initializeRegister();
-        LogPrinter.setTextFlow(logFlow);
-        LogPrinter.setScrollPane(scrollPane);
-        LOG.info("initialize successful");
-
-    }
-
-    // Memory Initialization
-    private void initializeMemory(){
-        memoryId.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryId"));
-        memoryBinary.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryBinary"));
-
-        memory.initialize();
-        for (int i = 0; i < 2048; i++) {
-            Element memoryChunk = memory.fetch(i);
-            String j = String.valueOf(i);
-            memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString()));
-        }
-        memoryTableView.setItems(memoryTableObservableList);
-    }
-
-
-    // Register Initialization
-    private void initializeRegister(){
-        registerId.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerId"));
-        registerName.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerName"));
-        registerBinary.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerBinary"));
-        HashMap<String, Register> allRegisters =  register.getAllRegisters();
-        int index = 0;
-        for(String name : MachineRegisters.REG_NAMES) {
-            String indexStr = Integer.toString(index);
-            Register register = allRegisters.get(name);
-            String registerBinary = register.toString();
-            registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary));
-            index += 1;
-        }
-        registerTableView.setItems(registerTableObservableList);
-    }
-
-    // config binary input Textfield
+    /**
+     * This is the log text field configuration
+     */
+    // config the log pane Text flow
     @FXML
-    private TextField binaryInput;
+    private TextFlow logFlow;
+    // config the log scroll pane to make the log text scroll
+    @FXML
+    private ScrollPane scrollPane;
+    // config the log pane's clear button
+    @FXML
+    private Button clear;
+    // action on clicking the clear button
+    @FXML
+    public void clearLog(){
+        LogPrinter.clear();
+    }
 
-    // config Buttons
+    /**
+     * binary instruction input configuration
+     */
+    // config the "Run Binary" button
     @FXML
     private Button runBinaryButton;
-
+    // config the binary input text field
     @FXML
-    private Button program2Button;
-
-    //
+    private TextField binaryInput;
+    // action on clicking the "Run Binary" button
     @FXML
     public void runBinaryCode(){
         LOG.info(binaryInput.getText());
     }
 
-    @FXML
-    public void onProgram2() {
-        LOG.debug("Program 2 button down.");
-    }
-
+    /**
+     * Test pane buttons configuration
+     */
+    // config the Program1 button
     @FXML
     private Button program1;
-
+    // action on clicking the Program1 button
     @FXML
     public void runProgram1(){
         memory.set(31, "1001");
@@ -158,25 +125,57 @@ public class Controller implements Initializable {
             registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary));
             index += 1;
         }
-        // update register
-
-
-
-
     }
 
-    // config the log pane Text flow
     @FXML
-    private TextFlow logFlow;
+    private Button stepButton;
 
     @FXML
-    private ScrollPane scrollPane;
+    private void step(){
+        LOG.info("111111");
+    }
 
-    @FXML
-    private Button clear;
 
-    @FXML
-    public void clearLog(){
-        LogPrinter.clear();
+    /**
+     * Initialization on starting the application
+     */
+    // Initialize the simulator on starting
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        initializeMemory();
+        initializeRegister();
+        LogPrinter.setTextFlow(logFlow);
+        LogPrinter.setScrollPane(scrollPane);
+        LOG.info("initialize successful");
+    }
+
+    // Memory Initialization
+    private void initializeMemory(){
+        memoryId.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryId"));
+        memoryBinary.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryBinary"));
+        memory.initialize();
+        for (int i = 0; i < 2048; i++) {
+            Element memoryChunk = memory.fetch(i);
+            String j = String.valueOf(i);
+            memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString()));
+        }
+        memoryTableView.setItems(memoryTableObservableList);
+    }
+
+    // Register Initialization
+    private void initializeRegister(){
+        registerId.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerId"));
+        registerName.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerName"));
+        registerBinary.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerBinary"));
+        HashMap<String, Register> allRegisters =  register.getAllRegisters();
+        int index = 0;
+        for(String name : MachineRegisters.REG_NAMES) {
+            String indexStr = Integer.toString(index);
+            Register register = allRegisters.get(name);
+            String registerBinary = register.toString();
+            registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary));
+            index += 1;
+        }
+        registerTableView.setItems(registerTableObservableList);
     }
 }

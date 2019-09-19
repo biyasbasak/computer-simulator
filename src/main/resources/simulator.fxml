@@ -34,11 +34,11 @@
             </HBox>
          </top>
          <center>
-            <TableView prefHeight="356.0" prefWidth="600.0" BorderPane.alignment="CENTER" fx:id="registerTableView">
+            <TableView fx:id="registerTableView" prefHeight="356.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <columns>
-                  <TableColumn prefWidth="62.0" text="id" fx:id="registerId"/>
-                  <TableColumn prefWidth="142.0" text="Register Name" fx:id="registerName"/>
-                  <TableColumn prefWidth="395.0" text="binary" fx:id="registerBinary"/>
+                  <TableColumn fx:id="registerId" prefWidth="62.0" text="id" />
+                  <TableColumn fx:id="registerName" prefWidth="142.0" text="Register Name" />
+                  <TableColumn fx:id="registerBinary" prefWidth="395.0" text="binary" />
                </columns>
             </TableView>
          </center>
@@ -71,12 +71,12 @@
                   <Font size="26.0" />
                </font>
             </Label>
-            <Button mnemonicParsing="false" text="Program 1" fx:id="program1" onAction="#runProgram1">
+            <Button fx:id="program1" mnemonicParsing="false" onAction="#runProgram1" text="Program 1">
                <HBox.margin>
                   <Insets top="40.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Program 2" fx:id="program2Button" onAction="#onProgram2">
+            <Button mnemonicParsing="false" text="Program 2">
                <HBox.margin>
                   <Insets left="15.0" top="40.0" />
                </HBox.margin>
@@ -91,16 +91,11 @@
                   <Insets left="15.0" top="40.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Button">
-               <HBox.margin>
-                  <Insets left="15.0" top="40.0" />
-               </HBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" text="Button">
-               <HBox.margin>
-                  <Insets left="15.0" top="40.0" />
-               </HBox.margin>
-            </Button>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Button layoutX="40.0" layoutY="39.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="73.0" text="Step" AnchorPane.leftAnchor="60.0" fx:id="stepButton" onAction="#step"/>
+               </children>
+            </AnchorPane>
          </children>
       </HBox>
       <HBox prefHeight="100.0" prefWidth="200.0" spacing="11.0" GridPane.columnIndex="1">
@@ -112,7 +107,7 @@
             </Label>
             <VBox prefHeight="109.0" prefWidth="109.0">
                <children>
-                  <Button mnemonicParsing="false" text="Run Binary" fx:id="runBinaryButton" onAction="#runBinaryCode">
+                  <Button fx:id="runBinaryButton" mnemonicParsing="false" onAction="#runBinaryCode" text="Run Binary">
                      <VBox.margin>
                         <Insets left="10.0" top="10.0" />
                      </VBox.margin>
@@ -126,7 +121,7 @@
             </VBox>
             <VBox prefHeight="109.0" prefWidth="395.0">
                <children>
-                  <TextField promptText="16 bits binary code" fx:id="binaryInput">
+                  <TextField fx:id="binaryInput" promptText="16 bits binary code">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
@@ -149,7 +144,7 @@
                         <Font size="26.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" text="Clear" fx:id="clear" onAction="#clearLog">
+                  <Button fx:id="clear" mnemonicParsing="false" onAction="#clearLog" text="Clear">
                      <HBox.margin>
                         <Insets left="470.0" top="5.0" />
                      </HBox.margin>
@@ -158,8 +153,10 @@
             </HBox>
          </top>
          <center>
-            <ScrollPane prefHeight="251.0" prefWidth="1180.0" BorderPane.alignment="CENTER" fx:id="scrollPane">
-               <TextFlow prefHeight="248.0" prefWidth="1180.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="logFlow"/>
+            <ScrollPane fx:id="scrollPane" prefHeight="251.0" prefWidth="1180.0" BorderPane.alignment="CENTER">
+               <content>
+                  <TextFlow fx:id="logFlow" prefHeight="248.0" prefWidth="1180.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </content>
             </ScrollPane>
          </center>
       </BorderPane>
