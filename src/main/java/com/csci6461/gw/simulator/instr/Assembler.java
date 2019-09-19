@@ -122,6 +122,20 @@ public class Assembler {
         return;
     }
 
+    private int translateLabel(int lineno, String ident) throws AssemblerException {
+        try {
+            return Integer.decode(ident);
+        } catch(NumberFormatException ex) {
+            // Pass over
+        }
+
+        Integer address = labelMap.get(ident);
+        if(address == null) {
+            throw new AssemblerException(lineno, "Undefined identifier");
+        }
+        return address;
+    }
+
     private int regNameToIndex(int lineno, String name) throws AssemblerException {
         switch(name) {
             case "R0":
@@ -146,23 +160,23 @@ public class Assembler {
     }
 
     public String assembleOne(int lineno, String line) throws AssemblerException {
+        String result = "";
         Scanner scan = new Scanner(line);
         scan.useDelimiter("");  // read one by one
 
+        // find & append opcode
         String mnenomic = readUntil(scan, ' ').toUpperCase();
-        String result = "";
-        
         Integer opcode = OPCODE_LIST.get(mnenomic);
         if(opcode == null) {
             throw new AssemblerException(lineno, "Invalid instruction");
         }
-
         result += intToString(opcode, 6);
 
         int gr, xr, address;
         String indirect;
 
-        // TODO
+        // append operands according to instruction format
+        // TODO: Add every instruction
         switch(mnenomic) {
             case "HLT":
                 result += "0000000000";
@@ -170,18 +184,31 @@ public class Assembler {
             case "LDR":
             case "STR":
             case "LDA":
+            case "JZ":
+            case "JNE":
+            case "JCC":
+            case "SOB":
+            case "JGE":
+            case "AMR":
+            case "SMR":
                 gr = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
                 xr = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
-                address = Integer.decode(readUntil(scan, ','));
+                address = translateLabel(lineno, readUntil(scan, ','));
                 indirect = readUntil(scan, ',').toUpperCase();
                 result += packFormat1(gr, xr, indirect == "I", address);
                 break;
             case "LDX":
             case "STX":
+            case "JMA":
+            case "JSR":
                 xr = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
-                address = Integer.decode(readUntil(scan, ','));
+                address = translateLabel(lineno, readUntil(scan, ','));
                 indirect = readUntil(scan, ',').toUpperCase();
                 result += packFormat1(0, xr, indirect == "I", address);
+                break;
+            case "RFS":
+                address = translateLabel(lineno, readUntil(scan, ','));
+                result += packFormat1(0, 0, false, address);
                 break;
             default:
                 throw new AssemblerException(lineno, "Unknown mnenomic");
