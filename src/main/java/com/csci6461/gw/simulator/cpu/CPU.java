@@ -14,17 +14,23 @@ public class CPU {
     private MachineRegisters registers;
     private Memory memory;
 
-    private static final int PROGRAM_BASE = 0x100;
+    public static final int PROGRAM_BASE = 0x100;
 
     public CPU() {
         this.registers = new MachineRegisters();
         this.memory = new Memory();
     }
 
+    /**
+     * Get machine registers.
+     */
     public MachineRegisters getRegisters() {
         return registers;
     }
 
+    /**
+     * Get memory object.
+     */
     public Memory getMemory() {
         return memory;
     }
@@ -38,6 +44,9 @@ public class CPU {
         execute(instruction);
     }
 
+    /**
+     * Execute the given instruction.
+     */
     public void execute(HashMap<String, String> instructionData) throws CPUException {
         int opCode = Integer.parseInt(instructionData.get("opCode"), 2);
         Instruction ins;
@@ -64,11 +73,17 @@ public class CPU {
         ins.execute(this, this.memory, this.registers);
     }
 
+    /**
+     * Fetch a program to IR register.
+     */
     private void fetchInstruction() {
         Element ins = memory.fetch(registers.pc());
         registers.getRegister("IR").set(ins);
     }
 
+    /**
+     * Load a program to PROGRAM_BASE.
+     */
     public void loadProgram(String[] program) {
         for(int i = 0; i < program.length; i++) {
             memory.set(PROGRAM_BASE + i, program[i]);

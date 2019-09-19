@@ -119,12 +119,18 @@ public class Element extends BitSet {
         return s;
     }
 
+    /**
+     * Create an element from a binary string with bit size.
+     */
     public static Element fromString(String s, int nbits) {
         Element e = new Element(nbits);
         e.set(BitOperations.stringToBits(s));
         return e;
     }
 
+    /**
+     * Create an 16 bit element from a binary string.
+     */
     public static Element fromString(String s) {
         return fromString(s, 16);
     }

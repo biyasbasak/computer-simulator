@@ -9,6 +9,9 @@ import java.io.PrintWriter;
 public class Exceptions {
     private static Logger LOG = LogManager.getLogger("Util.Exc");
 
+    /**
+     * General simulator exception.
+     */
     public static abstract class SimulatorException extends RuntimeException {
         private String _message;
 
@@ -31,6 +34,9 @@ public class Exceptions {
         }
     }
 
+    /**
+     * Assembler-specific exception.
+     */
     public static class AssemblerException extends SimulatorException {
         private int _lineno;
 
@@ -45,6 +51,9 @@ public class Exceptions {
         }
     }
 
+    /**
+     * CPU-specific exception.
+     */
     public static class CPUException extends SimulatorException {
         private int _pc;
 

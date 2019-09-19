@@ -2,6 +2,7 @@ package com.csci6461.gw.simulator.instr;
 
 import static com.csci6461.gw.simulator.util.Exceptions.*;
 import static com.csci6461.gw.simulator.util.BitOperations.*;
+import com.csci6461.gw.simulator.cpu.CPU;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.List;
@@ -11,9 +12,11 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class Assembler {
-
     private static Logger LOG = LogManager.getLogger("Ins.Assembler");
 
+    /**
+     * Opcodes by its name.
+     */
     private static final HashMap<String, Integer> OPCODE_LIST = new HashMap<>() {{
        put("HLT", 0);
        put("TRAP", 30);
@@ -60,9 +63,12 @@ public class Assembler {
 
     public Assembler() {
         labelMap = new HashMap<>();
-        pc = 0;
+        pc = CPU.PROGRAM_BASE;
     }
 
+    /**
+     * Read a symbol until delimiter.
+     */
     private String readUntil(Scanner scan, char delim) {
         String r = "";
         while(scan.hasNext()) {
@@ -76,6 +82,9 @@ public class Assembler {
         return r.stripTrailing();
     }
 
+    /**
+     * Skip all the whitespaces
+     */
     private void skipWhitespace(Scanner scan) {
         while(scan.hasNext("\\s")) {
             scan.next();
@@ -83,6 +92,10 @@ public class Assembler {
         return;
     }
 
+    /**
+     * Assemble a program.
+     * Handles pseudo-instructions as well.
+     */
     public String[] assemble(String source) throws AssemblerException {
         Scanner scan = new Scanner(source);
         List<String> result = new ArrayList<>();
@@ -108,6 +121,9 @@ public class Assembler {
         return result.toArray(new String[0]);
     }
 
+    /**
+     * Handle pseudo-instruction.
+     */
     public void handlePseudoInstruction(int lineno, String line) {
         Scanner scan = new Scanner(line);
         scan.useDelimiter("");
@@ -124,6 +140,9 @@ public class Assembler {
         return;
     }
 
+    /**
+     * Translate a label to integer.
+     */
     private int translateLabel(int lineno, String ident) throws AssemblerException {
         try {
             return Integer.decode(ident);
@@ -138,6 +157,9 @@ public class Assembler {
         return address;
     }
 
+    /**
+     * Register name to index
+     */
     private int regNameToIndex(int lineno, String name) throws AssemblerException {
         switch(name) {
             case "R0":
@@ -157,10 +179,16 @@ public class Assembler {
         }
     }
 
+    /**
+     * Pack binary string format 1. (opcode, r, ix, i, address)
+     */
     private String packFormat1(int gr, int xr, Boolean indirect, int address) {
         return intToString(gr, 2) + intToString(xr, 2) + (indirect ? "1" : "0") + intToString(address, 5);
     }
 
+    /**
+     * Assemble one line
+     */
     public String assembleOne(int lineno, String line) throws AssemblerException {
         String result = "";
         Scanner scan = new Scanner(line);

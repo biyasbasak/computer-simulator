@@ -9,7 +9,6 @@ import java.util.HashMap;
  * Class representing all the registers the CPU need.
  */
 public class MachineRegisters {
-
     private static final Logger LOG = LogManager.getLogger("sim.register");
 
     public static final int GR_COUNT = 4;
@@ -17,9 +16,11 @@ public class MachineRegisters {
     public static final int IX_COUNT = 4;
     public static final int IX_BITS = 16;
 
+    // General registers & index register names
     public static final String GR_NAMES[] = { "R0", "R1", "R2", "R3" };
     public static final String IX_NAMES[] = { "X0", "X1", "X2", "X3" };
 
+    // Register names
     public static final String REG_NAMES[] = { "R0", "R1", "R2", "R3", "PC", "CC", "IR", "MAR", "MBR", "MFR", "X1", "X2", "X3" };
 
     /**
