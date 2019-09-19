@@ -5,12 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class App extends Application {
-    private static Logger LOG = LogManager.getLogger("App.Main");
-
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/simulator.fxml"));
@@ -21,7 +17,6 @@ public class App extends Application {
 
     public static void main(String[] args) {
         // Use CLI mode if there are arguments
-        LOG.debug("Starting application...");
         if(args.length > 0) {
             // TODO
             return;

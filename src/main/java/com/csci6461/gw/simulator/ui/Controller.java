@@ -6,6 +6,7 @@ import com.csci6461.gw.simulator.reg.MachineRegisters;
 import com.csci6461.gw.simulator.reg.Register;
 import com.csci6461.gw.simulator.util.Element;
 import com.csci6461.gw.simulator.instr.Assembler;
+import static com.csci6461.gw.simulator.util.StringOperations.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -139,7 +140,7 @@ public class Controller implements Initializable {
         InputStream file = getClass().getResourceAsStream("/programs/program1.asm");
 
         try {
-            String assembly = new String(file.readAllBytes());
+            String assembly = new String(readAllBytes(file));
             Assembler asm = new Assembler();
             String[] program = asm.assemble(assembly);
             cpu.loadProgram(program);
