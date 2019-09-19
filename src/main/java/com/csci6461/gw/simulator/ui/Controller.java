@@ -44,6 +44,10 @@ public class Controller implements Initializable {
     // config the binary column of Memory table
     @FXML
     private TableColumn<MemoryTable, String> memoryBinary;
+
+    @FXML
+    private TableColumn<MemoryTable, String> memoryDecimal;
+
     // creat a "observablelist" object to present memory data
     private ObservableList<MemoryTable> memoryTableObservableList = FXCollections.observableArrayList(
             );
@@ -60,6 +64,8 @@ public class Controller implements Initializable {
     private TableColumn<RegisterTable, String> registerName;
     @FXML
     private TableColumn<RegisterTable, String> registerBinary;
+    @FXML
+    private TableColumn<RegisterTable, String> registerDecimal;
 
     private ObservableList<RegisterTable> registerTableObservableList = FXCollections.observableArrayList(
             );
@@ -106,7 +112,7 @@ public class Controller implements Initializable {
         for (int i = 0; i < 2048; i++) {
             Element memoryChunk = memory.fetch(i);
             String j = String.valueOf(i);
-            memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString()));
+            memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(), Integer.toString(memoryChunk.value())));
         }
 
         HashMap<String, Register> allRegisters =  register.getAllRegisters();
@@ -115,7 +121,8 @@ public class Controller implements Initializable {
             String indexStr = Integer.toString(index);
             Register register = allRegisters.get(name);
             String registerBinary = register.toString();
-            registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary));
+            String registerDecimal = Integer.toString(register.value());
+            registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary, registerDecimal));
             index += 1;
         }
     }
@@ -172,11 +179,12 @@ public class Controller implements Initializable {
     private void initializeMemory(){
         memoryId.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryId"));
         memoryBinary.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryBinary"));
+        memoryDecimal.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryDecimal"));
         memory.initialize();
         for (int i = 0; i < 2048; i++) {
             Element memoryChunk = memory.fetch(i);
             String j = String.valueOf(i);
-            memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString()));
+            memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(),Integer.toString(memoryChunk.value())));
         }
         memoryTableView.setItems(memoryTableObservableList);
     }
@@ -186,13 +194,15 @@ public class Controller implements Initializable {
         registerId.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerId"));
         registerName.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerName"));
         registerBinary.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerBinary"));
+        registerDecimal.setCellValueFactory(new PropertyValueFactory<RegisterTable, String>("registerDecimal"));
         HashMap<String, Register> allRegisters =  register.getAllRegisters();
         int index = 0;
         for(String name : MachineRegisters.REG_NAMES) {
             String indexStr = Integer.toString(index);
             Register register = allRegisters.get(name);
             String registerBinary = register.toString();
-            registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary));
+            String registerDecimal = Integer.toString(register.value());
+            registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary, registerDecimal));
             index += 1;
         }
         registerTableView.setItems(registerTableObservableList);
