@@ -81,10 +81,17 @@ public class MachineRegisters {
     }
 
     /**
-     * 
+     * Get all registers.
      */
     public HashMap<String, Register> getAllRegisters() {
         return _Regs;
+    }
+
+    /**
+     * Get register by name.
+     */
+    public Register getRegister(String name) {
+        return _Regs.get(name);
     }
 
     /**
@@ -92,6 +99,13 @@ public class MachineRegisters {
      */
     public void advance() {
         _Regs.get("PC").add(1);
+    }
+
+    /**
+     * Get the value of PC 
+     */
+    public int pc() {
+        return _Regs.get("PC").value();
     }
 
     /**

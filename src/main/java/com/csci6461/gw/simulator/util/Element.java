@@ -89,6 +89,14 @@ public class Element extends BitSet {
     }
 
     /**
+     * Replace the element by binary string.
+     */
+    public void set(String s) {
+        int value = BitOperations.stringToInt(s);
+        this.setByValue(value);
+    }
+
+    /**
      * Set a element by its integer representation.
      */
     public void setByValue(int value) {

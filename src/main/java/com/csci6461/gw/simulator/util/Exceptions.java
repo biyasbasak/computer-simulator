@@ -41,7 +41,21 @@ public class Exceptions {
 
         @Override
         public String getMessage() {
-            return String.format("%d: %s", _lineno, super.getMessage());
+            return String.format("[Assembler] %d: %s", _lineno, super.getMessage());
+        }
+    }
+
+    public static class CPUException extends SimulatorException {
+        private int _pc;
+
+        public CPUException(int pc, String message) {
+            super(message);
+            _pc = pc;
+        }
+
+        @Override
+        public String getMessage() {
+            return String.format("[CPU] %s at PC %d", super.getMessage(), _pc);
         }
     }
 }

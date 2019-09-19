@@ -22,5 +22,4 @@ public abstract class Instruction {
     public HashMap<String, String> getInstruction() {
         return this.instruction;
     }
-
 }
