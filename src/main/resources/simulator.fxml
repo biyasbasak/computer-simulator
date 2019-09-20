@@ -73,7 +73,7 @@
                   <Font size="26.0" />
                </font>
             </Label>
-            <Button fx:id="program1" mnemonicParsing="false" onAction="#runProgram1" text="Program 1">
+            <Button fx:id="program1" mnemonicParsing="false" onAction="#runProgram1" text="IPL 1">
                <HBox.margin>
                   <Insets top="40.0" />
                </HBox.margin>
