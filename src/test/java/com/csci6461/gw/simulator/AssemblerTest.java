@@ -33,6 +33,9 @@ public class AssemblerTest {
         try {
             String asmcode = new String(readAllBytes(getClass().getResourceAsStream("/program1.asm")));
             String[] bitcode = asm.assemble(asmcode);
+            for(int i = 0; i < bitcode.length; i++) {
+                System.out.printf("%d: %s\n", i, bitcode[i]);
+            }
         } catch(IOException ex) {
             ex.printStackTrace();
             assertTrue(false);

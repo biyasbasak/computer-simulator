@@ -22,8 +22,10 @@ public class LoadStore {
             HashMap<String, String> instruction = this.getInstruction();
             Register generalRegister = registers.getGeneralRegister(Integer.parseInt(instruction.get("reg"), 2));
             int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
+            registers.getAllRegisters().get("MAR").setByValue(effectiveAddress);
             Element value = memory.fetch(effectiveAddress);
-            generalRegister.setByValue(value.value());
+            registers.getAllRegisters().get("MBR").setByValue(value.value());
+            generalRegister.setByValue(registers.getAllRegisters().get("MBR").value());
             LOG.info("LDR: EA = {}, reg value = {}", effectiveAddress, generalRegister.value());
             registers.advance();
         }
@@ -34,7 +36,9 @@ public class LoadStore {
             HashMap<String, String> instruction = this.getInstruction();
             Register generalRegister = registers.getGeneralRegister(Integer.parseInt(instruction.get("reg"), 2));
             int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
-            memory.set(effectiveAddress, Integer.toBinaryString(generalRegister.value()));
+            registers.getAllRegisters().get("MAR").setByValue(effectiveAddress);
+            registers.getAllRegisters().get("MBR").setByValue(generalRegister.value());
+            memory.set(registers.getAllRegisters().get("MAR").value(), registers.getAllRegisters().get("MBR").toString());
             LOG.info("STR: EA = {}, memory value = {}", effectiveAddress, memory.fetch(effectiveAddress));
             registers.advance();
         }
@@ -45,7 +49,9 @@ public class LoadStore {
             HashMap<String, String> instruction = this.getInstruction();
             Register generalRegister = registers.getGeneralRegister(Integer.parseInt(instruction.get("reg"), 2));
             int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
-            generalRegister.setByValue(effectiveAddress);
+            registers.getAllRegisters().get("MAR").setByValue(effectiveAddress);
+            registers.getAllRegisters().get("MBR").setByValue(effectiveAddress);
+            generalRegister.setByValue(registers.getAllRegisters().get("MBR").value());
             LOG.info("LDA: EA = {}, reg value = {}", effectiveAddress, generalRegister.value());
             registers.advance();
         }
@@ -56,8 +62,10 @@ public class LoadStore {
             HashMap<String, String> instruction = this.getInstruction();
             Register indexRegister = registers.getIndexRegister(Integer.parseInt(instruction.get("indexReg"), 2));
             int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
+            registers.getAllRegisters().get("MAR").setByValue(effectiveAddress);
             Element value = memory.fetch(effectiveAddress);
-            indexRegister.setByValue(value.value());
+            registers.getAllRegisters().get("MBR").setByValue(value.value());
+            indexRegister.setByValue(registers.getAllRegisters().get("MBR").value());
             LOG.info("LDX: EA = {}, reg value = {}", effectiveAddress, indexRegister.value());
             registers.advance();
         }
@@ -68,7 +76,9 @@ public class LoadStore {
             HashMap<String, String> instruction = this.getInstruction();
             Register indexRegister = registers.getIndexRegister(Integer.parseInt(instruction.get("indexReg"), 2));
             int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
-            memory.set(effectiveAddress, Integer.toBinaryString(indexRegister.value()));
+            registers.getAllRegisters().get("MAR").setByValue(effectiveAddress);
+            registers.getAllRegisters().get("MBR").setByValue(indexRegister.value());
+            memory.set(registers.getAllRegisters().get("MAR").value(), registers.getAllRegisters().get("MBR").toString());
             LOG.info("STX: EA = {}, reg value = {}", effectiveAddress, indexRegister.value());
             registers.advance();
         }
