@@ -57,10 +57,10 @@
             </HBox>
          </top>
          <center>
-            <TableView fx:id="memoryTableView" prefHeight="372.0" prefWidth="505.0" BorderPane.alignment="CENTER">
+            <TableView fx:id="memoryTableView" prefHeight="372.0" prefWidth="505.0" BorderPane.alignment="CENTER" editable="true">
                <columns>
-                  <TableColumn fx:id="memoryId" prefWidth="65.0" text="id" />
-                  <TableColumn fx:id="memoryBinary" minWidth="0.0" prefWidth="389.0" text="binary" />
+                  <TableColumn fx:id="memoryId" prefWidth="65.0" text="id" editable="false"/>
+                  <TableColumn fx:id="memoryBinary" minWidth="0.0" prefWidth="389.0" text="binary"/>
                   <TableColumn fx:id="memoryDecimal" prefWidth="145.0" text="decimal" />
                </columns>
             </TableView>

@@ -7,6 +7,7 @@ import com.csci6461.gw.simulator.reg.Register;
 import com.csci6461.gw.simulator.util.Element;
 import com.csci6461.gw.simulator.instr.Assembler;
 import static com.csci6461.gw.simulator.util.StringOperations.*;
+import static com.csci6461.gw.simulator.util.BitOperations.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -185,6 +186,27 @@ public class Controller implements Initializable {
         memoryId.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryId"));
         memoryBinary.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryBinary"));
         memoryDecimal.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryDecimal"));
+
+        memoryBinary.setCellFactory(TextFieldTableCell.forTableColumn());
+        memoryBinary.setOnEditCommit((TableColumn.CellEditEvent<MemoryTable, String> t) -> {
+            MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            String newValue = t.getNewValue();
+            int address = Integer.parseInt(registerChange.getMemoryId());
+            memory.set(address, newValue);
+            LOG.info("Setting memory @ {} to {}.", address, Integer.parseInt(newValue, 2));
+            update();
+        });
+
+        memoryDecimal.setCellFactory(TextFieldTableCell.forTableColumn());
+        memoryDecimal.setOnEditCommit((TableColumn.CellEditEvent<MemoryTable, String> t) -> {
+            MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int newValue = Integer.parseInt(t.getNewValue());
+            int address = Integer.parseInt(registerChange.getMemoryId());
+            memory.set(address, intToString(newValue, 16));
+            LOG.info("Setting memory @ {} to {}.", address, newValue);
+            update();
+        });
+
         memory.initialize();
         for (int i = 0; i < 2048; i++) {
             Element memoryChunk = memory.fetch(i);
