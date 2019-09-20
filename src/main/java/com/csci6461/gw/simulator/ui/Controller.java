@@ -158,8 +158,11 @@ public class Controller implements Initializable {
 
     @FXML
     private void step(){
-        cpu.cycle();
-
+        try {
+            cpu.cycle();
+        } catch(RuntimeException ex) {
+            LOG.error("Single step error: " + ex.getMessage());
+        }
         update();
     }
 
