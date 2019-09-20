@@ -34,11 +34,11 @@
             </HBox>
          </top>
          <center>
-            <TableView fx:id="registerTableView" prefHeight="372.0" prefWidth="537.0" BorderPane.alignment="CENTER">
+            <TableView fx:id="registerTableView" prefHeight="372.0" prefWidth="537.0" BorderPane.alignment="CENTER" editable="true">
                <columns>
-                  <TableColumn fx:id="registerId" prefWidth="44.0" text="id" />
-                  <TableColumn fx:id="registerName" prefWidth="140.0" text="Register Name" />
-                  <TableColumn fx:id="registerBinary" prefWidth="240.0" text="binary" />
+                  <TableColumn fx:id="registerId" prefWidth="44.0" text="id" editable="false"/>
+                  <TableColumn fx:id="registerName" prefWidth="140.0" text="Register Name" editable="false"/>
+                  <TableColumn fx:id="registerBinary" prefWidth="240.0" text="binary"/>
                   <TableColumn fx:id="registerDecimal" prefWidth="174.0" text="decimal" />
                </columns>
             </TableView>

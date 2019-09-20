@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.TextFlow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -198,7 +199,27 @@ public class Controller implements Initializable {
         registerId.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerId"));
         registerName.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerName"));
         registerBinary.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerBinary"));
+        registerBinary.setCellFactory(TextFieldTableCell.forTableColumn());
+        registerBinary.setOnEditCommit((TableColumn.CellEditEvent<RegisterTable, String> t) -> {
+            RegisterTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int newValue = Integer.parseInt(t.getNewValue(), 2);
+            String registerName = registerChange.getRegisterName();
+            register.getAllRegisters().get(registerName).setByValue(newValue);
+            LOG.info("Setting register {} to {}.", registerName, newValue);
+            update();
+        });
+
         registerDecimal.setCellValueFactory(new PropertyValueFactory<RegisterTable, String>("registerDecimal"));
+        registerDecimal.setCellFactory(TextFieldTableCell.forTableColumn());
+        registerDecimal.setOnEditCommit((TableColumn.CellEditEvent<RegisterTable, String> t) -> {
+            RegisterTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int newValue = Integer.parseInt(t.getNewValue());
+            String registerName = registerChange.getRegisterName();
+            register.getAllRegisters().get(registerName).setByValue(newValue);
+            LOG.info("Setting register {} to {}.", registerName, newValue);
+            update();
+        });
+
         HashMap<String, Register> allRegisters =  register.getAllRegisters();
         int index = 0;
         for(String name : MachineRegisters.REG_NAMES) {
