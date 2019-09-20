@@ -14,13 +14,22 @@ import java.util.HashMap;
 public abstract class Instruction {
     private HashMap<String, String> instruction;
 
+    /**
+     * Execute the instruction within the context of the CPU.
+     */
     public abstract void execute(CPU cpu, Memory memory, MachineRegisters registers);
 
+    /**
+     * Set decoded instruction.
+     */
     public void setInstruction(HashMap<String, String> instruction) {
         this.instruction = instruction;
     }
+
+    /**
+     * Get decoded instruction.
+     */
     public HashMap<String, String> getInstruction() {
         return this.instruction;
     }
-
 }

@@ -23,11 +23,9 @@ public class LoadStore {
             Register generalRegister = registers.getGeneralRegister(Integer.parseInt(instruction.get("reg"), 2));
             int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
             Element value = memory.fetch(effectiveAddress);
-            generalRegister.set(value);
-//            LOG.info("LDR: EA = %d, value = %d", effectiveAddress, generalRegister.value());
-//            System.out.println("called1 " + effectiveAddress);
-//            System.out.println("called2 " + value);
-//            System.out.println("called3 " + generalRegister.value());
+            generalRegister.setByValue(value.value());
+            LOG.info("LDR: EA = {}, reg value = {}", effectiveAddress, generalRegister.value());
+            registers.advance();
         }
     }
     public static class STR extends  Instruction {
@@ -37,6 +35,8 @@ public class LoadStore {
             Register generalRegister = registers.getGeneralRegister(Integer.parseInt(instruction.get("reg"), 2));
             int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
             memory.set(effectiveAddress, Integer.toBinaryString(generalRegister.value()));
+            LOG.info("STR: EA = {}, memory value = {}", effectiveAddress, memory.fetch(effectiveAddress));
+            registers.advance();
         }
     }
     public static class LDA extends Instruction {
@@ -45,7 +45,9 @@ public class LoadStore {
             HashMap<String, String> instruction = this.getInstruction();
             Register generalRegister = registers.getGeneralRegister(Integer.parseInt(instruction.get("reg"), 2));
             int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
-            generalRegister.set(effectiveAddress);
+            generalRegister.setByValue(effectiveAddress);
+            LOG.info("LDA: EA = {}, reg value = {}", effectiveAddress, generalRegister.value());
+            registers.advance();
         }
     }
     public static class LDX extends Instruction {
@@ -55,7 +57,9 @@ public class LoadStore {
             Register indexRegister = registers.getIndexRegister(Integer.parseInt(instruction.get("indexReg"), 2));
             int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
             Element value = memory.fetch(effectiveAddress);
-            indexRegister.set(value);
+            indexRegister.setByValue(value.value());
+            LOG.info("LDX: EA = {}, reg value = {}", effectiveAddress, indexRegister.value());
+            registers.advance();
         }
     }
     public static class STX extends Instruction {
@@ -65,6 +69,8 @@ public class LoadStore {
             Register indexRegister = registers.getIndexRegister(Integer.parseInt(instruction.get("indexReg"), 2));
             int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
             memory.set(effectiveAddress, Integer.toBinaryString(indexRegister.value()));
+            LOG.info("STX: EA = {}, reg value = {}", effectiveAddress, indexRegister.value());
+            registers.advance();
         }
     }
 }

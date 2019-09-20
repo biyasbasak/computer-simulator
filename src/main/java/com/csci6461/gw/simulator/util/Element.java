@@ -89,6 +89,14 @@ public class Element extends BitSet {
     }
 
     /**
+     * Replace the element by binary string.
+     */
+    public void set(String s) {
+        int value = BitOperations.stringToInt(s);
+        this.setByValue(value);
+    }
+
+    /**
      * Set a element by its integer representation.
      */
     public void setByValue(int value) {
@@ -111,12 +119,18 @@ public class Element extends BitSet {
         return s;
     }
 
+    /**
+     * Create an element from a binary string with bit size.
+     */
     public static Element fromString(String s, int nbits) {
         Element e = new Element(nbits);
         e.set(BitOperations.stringToBits(s));
         return e;
     }
 
+    /**
+     * Create an 16 bit element from a binary string.
+     */
     public static Element fromString(String s) {
         return fromString(s, 16);
     }
