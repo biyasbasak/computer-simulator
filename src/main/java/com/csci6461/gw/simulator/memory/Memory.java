@@ -25,6 +25,7 @@ public class Memory {
             this.memory[i] = new Element(this.wordSize);
         }
     }
+
     public void set(int index, String word) {
         if (word.length() > this.wordSize) {
             System.out.println("Error: word size exceeds the word size limit supported by the memory");

@@ -1,6 +1,7 @@
 package com.csci6461.gw.simulator.cpu;
 
 import com.csci6461.gw.simulator.instr.Decoder;
+import com.csci6461.gw.simulator.instr.instructions.Transfer.*;
 import com.csci6461.gw.simulator.reg.MachineRegisters;
 import com.csci6461.gw.simulator.memory.Memory;
 import com.csci6461.gw.simulator.util.Element;
@@ -66,6 +67,14 @@ public class CPU {
             case 042:
                 ins = new STX();
                 break;
+            case 010:
+                ins = new JZ();
+            case 011:
+                ins = new JNE();
+            case 012:
+                ins = new JCC();
+            case 013:
+                ins = new JMA();
             default:
                 throw new CPUException(registers.pc(), "Unknown opcode");
         }
