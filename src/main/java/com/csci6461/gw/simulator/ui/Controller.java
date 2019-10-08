@@ -6,12 +6,15 @@ import com.csci6461.gw.simulator.reg.MachineRegisters;
 import com.csci6461.gw.simulator.reg.Register;
 import com.csci6461.gw.simulator.util.Element;
 import com.csci6461.gw.simulator.instr.Assembler;
+import static com.csci6461.gw.simulator.util.StringOperations.*;
+import static com.csci6461.gw.simulator.util.BitOperations.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.TextFlow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -139,7 +142,7 @@ public class Controller implements Initializable {
         InputStream file = getClass().getResourceAsStream("/programs/program1.asm");
 
         try {
-            String assembly = new String(file.readAllBytes());
+            String assembly = new String(readAllBytes(file));
             Assembler asm = new Assembler();
             String[] program = asm.assemble(assembly);
             cpu.loadProgram(program);
@@ -157,8 +160,11 @@ public class Controller implements Initializable {
 
     @FXML
     private void step(){
-        cpu.cycle();
-
+        try {
+            cpu.cycle();
+        } catch(RuntimeException ex) {
+            LOG.error("Single step error: " + ex.getMessage());
+        }
         update();
     }
 
@@ -180,6 +186,27 @@ public class Controller implements Initializable {
         memoryId.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryId"));
         memoryBinary.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryBinary"));
         memoryDecimal.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryDecimal"));
+
+        memoryBinary.setCellFactory(TextFieldTableCell.forTableColumn());
+        memoryBinary.setOnEditCommit((TableColumn.CellEditEvent<MemoryTable, String> t) -> {
+            MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            String newValue = t.getNewValue();
+            int address = Integer.parseInt(registerChange.getMemoryId());
+            memory.set(address, newValue);
+            LOG.info("Setting memory @ {} to {}.", address, Integer.parseInt(newValue, 2));
+            update();
+        });
+
+        memoryDecimal.setCellFactory(TextFieldTableCell.forTableColumn());
+        memoryDecimal.setOnEditCommit((TableColumn.CellEditEvent<MemoryTable, String> t) -> {
+            MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int newValue = Integer.parseInt(t.getNewValue());
+            int address = Integer.parseInt(registerChange.getMemoryId());
+            memory.set(address, intToString(newValue, 16));
+            LOG.info("Setting memory @ {} to {}.", address, newValue);
+            update();
+        });
+
         memory.initialize();
         for (int i = 0; i < 2048; i++) {
             Element memoryChunk = memory.fetch(i);
@@ -194,7 +221,27 @@ public class Controller implements Initializable {
         registerId.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerId"));
         registerName.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerName"));
         registerBinary.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerBinary"));
+        registerBinary.setCellFactory(TextFieldTableCell.forTableColumn());
+        registerBinary.setOnEditCommit((TableColumn.CellEditEvent<RegisterTable, String> t) -> {
+            RegisterTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int newValue = Integer.parseInt(t.getNewValue(), 2);
+            String registerName = registerChange.getRegisterName();
+            register.getAllRegisters().get(registerName).setByValue(newValue);
+            LOG.info("Setting register {} to {}.", registerName, newValue);
+            update();
+        });
+
         registerDecimal.setCellValueFactory(new PropertyValueFactory<RegisterTable, String>("registerDecimal"));
+        registerDecimal.setCellFactory(TextFieldTableCell.forTableColumn());
+        registerDecimal.setOnEditCommit((TableColumn.CellEditEvent<RegisterTable, String> t) -> {
+            RegisterTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int newValue = Integer.parseInt(t.getNewValue());
+            String registerName = registerChange.getRegisterName();
+            register.getAllRegisters().get(registerName).setByValue(newValue);
+            LOG.info("Setting register {} to {}.", registerName, newValue);
+            update();
+        });
+
         HashMap<String, Register> allRegisters =  register.getAllRegisters();
         int index = 0;
         for(String name : MachineRegisters.REG_NAMES) {

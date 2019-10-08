@@ -34,11 +34,11 @@
             </HBox>
          </top>
          <center>
-            <TableView fx:id="registerTableView" prefHeight="372.0" prefWidth="537.0" BorderPane.alignment="CENTER">
+            <TableView fx:id="registerTableView" prefHeight="372.0" prefWidth="537.0" BorderPane.alignment="CENTER" editable="true">
                <columns>
-                  <TableColumn fx:id="registerId" prefWidth="44.0" text="id" />
-                  <TableColumn fx:id="registerName" prefWidth="140.0" text="Register Name" />
-                  <TableColumn fx:id="registerBinary" prefWidth="240.0" text="binary" />
+                  <TableColumn fx:id="registerId" prefWidth="44.0" text="id" editable="false"/>
+                  <TableColumn fx:id="registerName" prefWidth="140.0" text="Register Name" editable="false"/>
+                  <TableColumn fx:id="registerBinary" prefWidth="240.0" text="binary"/>
                   <TableColumn fx:id="registerDecimal" prefWidth="174.0" text="decimal" />
                </columns>
             </TableView>
@@ -57,10 +57,10 @@
             </HBox>
          </top>
          <center>
-            <TableView fx:id="memoryTableView" prefHeight="372.0" prefWidth="505.0" BorderPane.alignment="CENTER">
+            <TableView fx:id="memoryTableView" prefHeight="372.0" prefWidth="505.0" BorderPane.alignment="CENTER" editable="true">
                <columns>
-                  <TableColumn fx:id="memoryId" prefWidth="65.0" text="id" />
-                  <TableColumn fx:id="memoryBinary" minWidth="0.0" prefWidth="389.0" text="binary" />
+                  <TableColumn fx:id="memoryId" prefWidth="65.0" text="id" editable="false"/>
+                  <TableColumn fx:id="memoryBinary" minWidth="0.0" prefWidth="389.0" text="binary"/>
                   <TableColumn fx:id="memoryDecimal" prefWidth="145.0" text="decimal" />
                </columns>
             </TableView>
@@ -73,7 +73,7 @@
                   <Font size="26.0" />
                </font>
             </Label>
-            <Button fx:id="program1" mnemonicParsing="false" onAction="#runProgram1" text="Program 1">
+            <Button fx:id="program1" mnemonicParsing="false" onAction="#runProgram1" text="IPL 1">
                <HBox.margin>
                   <Insets top="40.0" />
                </HBox.margin>
@@ -123,7 +123,7 @@
             </VBox>
             <VBox prefHeight="109.0" prefWidth="395.0">
                <children>
-                  <TextField fx:id="binaryInput" promptText="16 bits binary code">
+                  <TextField fx:id="binaryInput" promptText="Not Available Now">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
@@ -164,3 +164,4 @@
       </BorderPane>
    </children>
 </GridPane>
+   

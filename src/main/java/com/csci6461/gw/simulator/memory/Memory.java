@@ -45,8 +45,8 @@ public class Memory {
         String indexReg = instruction.get("indexReg");
 
         // In case of LDX and STX index Registers are ignored
-        if (Integer.parseInt(opCode, 2) == 041 || Integer.parseInt(opCode, 2) == 042    ) {
-            if (Integer.parseInt(indexReg, 2) == 0) {
+        if (Integer.parseInt(opCode, 2) == 041 || Integer.parseInt(opCode, 2) == 042) {
+            if (Integer.parseInt(indirectBit, 2) == 0) {
                 effectiveAddress = Integer.parseInt(address, 2);
             } else {
                 Element memoryChunk = fetch(Integer.parseInt(address,2));
