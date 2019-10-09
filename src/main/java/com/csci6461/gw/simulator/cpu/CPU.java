@@ -101,7 +101,8 @@ public class CPU {
     }
 
     /**
-     * One CPU cycle
+     * One instruction cycle,
+     * assuming single-cycle machine...
      */
     public void cycle() {
         // 1. Fetch instruction

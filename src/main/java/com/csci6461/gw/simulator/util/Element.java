@@ -74,6 +74,13 @@ public class Element extends BitSet {
     }
 
     /**
+     * Return the bitsize of this element
+     */
+    public int bits() {
+        return this._nbits;
+    }
+
+    /**
      * Get the integer representation of the element.
      */
     public int value() {
@@ -101,6 +108,16 @@ public class Element extends BitSet {
      */
     public void setByValue(int value) {
         this.set(BitOperations.intToBits(wraparound(value), _nbits));
+    }
+
+    /**
+     * Clone this object
+     */
+    @Override
+    public Element clone() {
+        Element result = new Element(this.bits());
+        result.set(this);
+        return result;
     }
 
     /**

@@ -67,4 +67,21 @@ public class Exceptions {
             return String.format("[CPU] %s at PC %d", super.getMessage(), _pc);
         }
     }
+
+    /**
+     * Memory-specific exception.
+     */
+    public static class MemoryException extends SimulatorException {
+        private int _address;
+
+        public MemoryException(int address, String message) {
+            super(message);
+            _address = address;
+        }
+
+        @Override
+        public String getMessage() {
+            return String.format("[Memory] %s at address %x", super.getMessage(), _address);
+        }
+    }
 }
