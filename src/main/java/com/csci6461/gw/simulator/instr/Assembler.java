@@ -188,6 +188,27 @@ public class Assembler {
     }
 
     /**
+     * Pack binary string format 2. (opcode, rx, ry, 0)
+     */
+    private String packFormat2(int rx, int ry) {
+        return intToString(rx, 2) + intToString(ry, 2) + "000000";
+    }
+
+    /**
+     * Pack binary string format 3. (Shift instructions)
+     */
+    private String packFormat3(int r, boolean arith, boolean lr, int count) {
+        return intToString(r, 2) + (arith ? "0" : "1") + (lr ? "1" : "0") + "00" + intToString(count, 4);
+    }
+
+    /**
+     * Pack binary string format 4. (I/O instruction)
+     */
+    private String packFormat4(int r, int devID) {
+        return intToString(r, 2) + "000" + intToString(devID, 5);
+    }
+
+    /**
      * Assemble one line
      */
     public String assembleOne(int lineno, String line) throws AssemblerException {
@@ -203,14 +224,32 @@ public class Assembler {
         }
         result += intToString(opcode, 6);
 
+        /* Format 1 */
         int gr, xr, address;
         String indirect;
+
+        /* Format 2 */
+        int rx, ry;
+
+        /* Format 3 */
+        int r, count;
+        String arith, lr;
+
+        /* Format 4 */
+        int devID;
+
+        /* TRAP */
+        int trapco;
 
         // append operands according to instruction format
         // TODO: Add every instruction
         switch(mnenomic) {
             case "HLT":
                 result += "0000000000";
+                break;
+            case "TRAP":
+                trapco = translateLabel(lineno, readUntil(scan, ','));
+                result += "000000" + intToString(trapco, 4);
                 break;
             case "LDR":
             case "STR":
@@ -240,6 +279,40 @@ public class Assembler {
             case "RFS":
                 address = translateLabel(lineno, readUntil(scan, ','));
                 result += packFormat1(0, 0, false, address);
+                break;
+            case "AIR":
+            case "SIR":
+                gr = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
+                address = translateLabel(lineno, readUntil(scan, ','));
+                result += packFormat1(gr, 0, false, address);
+                break;
+            case "MLT":
+            case "DVD":
+            case "TRR":
+            case "AND":
+            case "OR":
+                rx = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
+                ry = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
+                result += packFormat2(rx, ry);
+                break;
+            case "NOT":
+                rx = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
+                result += packFormat2(rx, 0);
+                break;
+            case "SRC":
+            case "RRC":
+                r = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
+                count = translateLabel(lineno, readUntil(scan, ','));
+                lr = readUntil(scan, ',').toUpperCase();
+                arith = readUntil(scan, ',').toUpperCase();
+                result += packFormat3(r, arith == "A", lr == "L", count);
+                break;
+            case "IN":
+            case "OUT":
+            case "CHK":
+                r = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
+                devID = translateLabel(lineno, readUntil(scan, ','));
+                result += packFormat4(r, devID);
                 break;
             default:
                 throw new AssemblerException(lineno, "Unknown mnenomic");

@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 
 public class Transfer {
-    private static Logger LOG = LogManager.getLogger("Ins.LoadStore");
+    private static Logger LOG = LogManager.getLogger("Ins.Transfer");
     public static class JZ extends Instruction {
         @Override
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {

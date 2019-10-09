@@ -17,9 +17,12 @@ public class CPU {
 
     public static final int PROGRAM_BASE = 0x100;
 
+    private boolean halted;
+
     public CPU() {
         this.registers = new MachineRegisters();
         this.memory = new Memory();
+        this.halted = false;
     }
 
     /**
@@ -36,15 +39,6 @@ public class CPU {
         return memory;
     }
     
-    public void sampleTestProgram() {
-        /**
-         *  sample Instruction for testing
-         */
-        String word = "0000011100011111";
-        HashMap<String, String> instruction = Decoder.decode(word);
-        execute(instruction);
-    }
-
     /**
      * Execute the given instruction.
      */
@@ -105,6 +99,10 @@ public class CPU {
      * assuming single-cycle machine...
      */
     public void cycle() {
+        if(halted) {
+            throw new CPUException(registers.pc(), "Machine halted");
+        }
+
         // 1. Fetch instruction
         fetchInstruction();
         
@@ -113,5 +111,26 @@ public class CPU {
 
         // 3. Execute instruction
         execute(instruction);
+    }
+
+    /**
+     * Halt the machine
+     */
+    public void halt() {
+        this.halted = true;
+    }
+
+    /**
+     * Return the status of the machine.
+     */
+    public boolean halted() {
+        return this.halted;
+    }
+
+    /**
+     * Trigger trap
+     */
+    public void trap(int trcode) {
+
     }
 }
