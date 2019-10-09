@@ -19,10 +19,13 @@ public class CPU {
 
     private boolean halted;
 
+    private ALU alu;
+
     public CPU() {
         this.registers = new MachineRegisters();
         this.memory = new Memory();
         this.halted = false;
+        this.alu = new ALU(this);
     }
 
     /**
@@ -37,6 +40,13 @@ public class CPU {
      */
     public Memory getMemory() {
         return memory;
+    }
+
+    /**
+     * Get ALU 
+     */
+    public ALU getALU() {
+        return this.alu;
     }
     
     /**
