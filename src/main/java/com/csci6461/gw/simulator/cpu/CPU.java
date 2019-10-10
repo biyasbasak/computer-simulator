@@ -27,7 +27,9 @@ public class CPU {
 
     private ALU alu;
 
-    public HashMap<Integer, Device> devices;
+    private HashMap<Integer, Device> devices;
+
+    private Keyboard kbd;
 
     public CPU() {
         this.registers = new MachineRegisters();
@@ -129,7 +131,7 @@ public class CPU {
      */
     public void loadProgram(String[] program) {
         for(int i = 0; i < program.length; i++) {
-            memory.set(PROGRAM_BASE + i, program[i]);
+            memory.set_direct(PROGRAM_BASE + i, program[i]);
         }
         registers.setPC(PROGRAM_BASE);
     }

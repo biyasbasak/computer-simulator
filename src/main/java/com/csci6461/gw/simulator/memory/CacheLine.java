@@ -92,6 +92,7 @@ public class CacheLine {
         if(cached[offset]) {
             dirty[offset] = true;   // set dirty bit, write back on flush
         }
+        this.tag = tag;
         cached[offset] = true;
         caches[offset] = elem;
         return;

@@ -11,6 +11,9 @@ import static com.csci6461.gw.simulator.util.BitOperations.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.KeyCode;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -19,11 +22,14 @@ import javafx.scene.text.TextFlow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javafx.application.Platform;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * This is the Controller Class
@@ -74,6 +80,8 @@ public class Controller implements Initializable {
             );
     private MachineRegisters register = cpu.getRegisters();
 
+    private Deque<Integer> bufferQ = new ArrayDeque<Integer>();
+
     /**
      * This is the log text field configuration
      */
@@ -121,13 +129,13 @@ public class Controller implements Initializable {
         LOG.info(binaryInput.getText());
     }
 
-    private void update() {
+    public void update() {
         registerTableView.getItems().clear();
         memoryTableView.getItems().clear();
-        
+
         // update memory
         for (int i = 0; i < 2048; i++) {
-            Element memoryChunk = memory.fetch(i);
+            Element memoryChunk = memory.fetch_direct(i);
             String j = String.valueOf(i);
             memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(), Integer.toString(memoryChunk.value())));
         }
@@ -174,12 +182,25 @@ public class Controller implements Initializable {
     // action on clicking the step button
     @FXML
     private void step(){
+        class CPUTask implements Runnable {
+            Controller ctrl;
+            public CPUTask(Controller c) { ctrl = c; }
+            public void run() {
+                ctrl.cpu.step();
+                Platform.runLater(() -> {
+                    ctrl.update();
+                });
+            }
+        }
+
         try {
-            cpu.cycle();
+            Thread t = new Thread(new CPUTask(this));
+            t.start();
         } catch(RuntimeException ex) {
             LOG.error("Single step error: " + ex.getMessage());
+        } catch(Exception ex) {
+            LOG.error("Threading error: " + ex.getMessage());
         }
-        update();
     }
     // config the IPL button
     @FXML
@@ -204,6 +225,35 @@ public class Controller implements Initializable {
         initializeRegister();
         LogPrinter.setTextFlow(logFlow);
         LogPrinter.setScrollPane(scrollPane);
+
+        console.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if(keyEvent.getCode() == KeyCode.BACK_SPACE) {
+                    if(bufferQ.size() == 0) {
+                        keyEvent.consume();
+                    } else {
+                        bufferQ.removeLast();
+                    }
+                } else if(keyEvent.getCode() == KeyCode.ENTER) {
+                    // TODO
+                    bufferQ.clear();
+                }
+            }
+        });
+
+        console.setOnKeyTyped(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                String ch = keyEvent.getCharacter();
+                if(ch.length() != 0) {
+                    if(ch.charAt(0) != '\r') {
+                        bufferQ.addLast((int)ch.charAt(0));
+                    }
+                }
+            }
+        });
+
         LOG.info("initialize successful");
     }
 
@@ -235,7 +285,7 @@ public class Controller implements Initializable {
         });
 
         memory.initialize();
-        for (int i = 0; i < 2048; i++) {
+        for (int i = 0; i < memory.size(); i++) {
             Element memoryChunk = memory.fetch_direct(i);
             String j = String.valueOf(i);
             memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(),Integer.toString(memoryChunk.value())));
