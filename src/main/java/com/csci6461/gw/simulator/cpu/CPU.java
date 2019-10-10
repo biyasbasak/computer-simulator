@@ -88,6 +88,18 @@ public class CPU {
             case 013:
                 ins = new JMA();
                 break;
+            case 014:
+                ins = new JSR();
+                break;
+            case 015:
+                ins = new RFS();
+                break;
+            case 016:
+                ins = new SOB();
+                break;
+            case 017:
+                ins = new JGE();
+                break;
             default:
                 throw new CPUException(registers.pc(), "Unknown opcode");
         }

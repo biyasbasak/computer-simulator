@@ -131,7 +131,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Test pane buttons configuration
+     * switch pane buttons configuration
      */
     // config the Program1 button
     @FXML
@@ -154,10 +154,10 @@ public class Controller implements Initializable {
 
         update();
     }
-
+    // config the Step button
     @FXML
     private Button stepButton;
-
+    // action on clicking the step button
     @FXML
     private void step(){
         try {
@@ -166,6 +166,18 @@ public class Controller implements Initializable {
             LOG.error("Single step error: " + ex.getMessage());
         }
         update();
+    }
+    // config the IPL button
+    @FXML
+    private Button ipl;
+    // action on clicking the IPL button
+    @FXML
+    public void IPL(){
+        initializeMemory();
+        initializeRegister();
+        LogPrinter.setTextFlow(logFlow);
+        LogPrinter.setScrollPane(scrollPane);
+        LOG.info("Machine initialized on IPL");
     }
 
     /**
@@ -180,6 +192,7 @@ public class Controller implements Initializable {
         LogPrinter.setScrollPane(scrollPane);
         LOG.info("initialize successful");
     }
+
 
     // Memory Initialization
     private void initializeMemory(){

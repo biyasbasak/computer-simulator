@@ -34,11 +34,11 @@
             </HBox>
          </top>
          <center>
-            <TableView fx:id="registerTableView" prefHeight="372.0" prefWidth="537.0" BorderPane.alignment="CENTER" editable="true">
+            <TableView fx:id="registerTableView" editable="true" prefHeight="372.0" prefWidth="537.0" BorderPane.alignment="CENTER">
                <columns>
-                  <TableColumn fx:id="registerId" prefWidth="44.0" text="id" editable="false"/>
-                  <TableColumn fx:id="registerName" prefWidth="140.0" text="Register Name" editable="false"/>
-                  <TableColumn fx:id="registerBinary" prefWidth="240.0" text="binary"/>
+                  <TableColumn fx:id="registerId" editable="false" prefWidth="44.0" text="id" />
+                  <TableColumn fx:id="registerName" editable="false" prefWidth="140.0" text="Register Name" />
+                  <TableColumn fx:id="registerBinary" prefWidth="240.0" text="binary" />
                   <TableColumn fx:id="registerDecimal" prefWidth="174.0" text="decimal" />
                </columns>
             </TableView>
@@ -57,10 +57,10 @@
             </HBox>
          </top>
          <center>
-            <TableView fx:id="memoryTableView" prefHeight="372.0" prefWidth="505.0" BorderPane.alignment="CENTER" editable="true">
+            <TableView fx:id="memoryTableView" editable="true" prefHeight="372.0" prefWidth="505.0" BorderPane.alignment="CENTER">
                <columns>
-                  <TableColumn fx:id="memoryId" prefWidth="65.0" text="id" editable="false"/>
-                  <TableColumn fx:id="memoryBinary" minWidth="0.0" prefWidth="389.0" text="binary"/>
+                  <TableColumn fx:id="memoryId" editable="false" prefWidth="65.0" text="id" />
+                  <TableColumn fx:id="memoryBinary" minWidth="0.0" prefWidth="389.0" text="binary" />
                   <TableColumn fx:id="memoryDecimal" prefWidth="145.0" text="decimal" />
                </columns>
             </TableView>
@@ -68,39 +68,53 @@
       </BorderPane>
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Label text="Test">
-               <font>
-                  <Font size="26.0" />
-               </font>
-            </Label>
-            <Button fx:id="program1" mnemonicParsing="false" onAction="#runProgram1" text="IPL 1">
-               <HBox.margin>
-                  <Insets top="40.0" />
-               </HBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" text="Program 2">
-               <HBox.margin>
-                  <Insets left="15.0" top="40.0" />
-               </HBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" text="Program3">
-               <HBox.margin>
-                  <Insets left="15.0" top="40.0" />
-               </HBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" text="Program 4">
-               <HBox.margin>
-                  <Insets left="15.0" top="40.0" />
-               </HBox.margin>
-            </Button>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <VBox prefHeight="109.0" prefWidth="135.0">
                <children>
-                  <Button fx:id="stepButton" layoutX="40.0" layoutY="39.0" mnemonicParsing="false" onAction="#step" prefHeight="23.0" prefWidth="73.0" text="Step" AnchorPane.leftAnchor="60.0" />
+                  <Label text="Switch">
+                     <font>
+                        <Font size="26.0" />
+                     </font>
+                  </Label>
+                  <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="98.0" text="IPL" fx:id="ipl" onAction="#IPL"/>
+                  <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="98.0" text="STOP">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Button>
                </children>
-            </AnchorPane>
+            </VBox>
+            <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="97.0" text="Program 1" fx:id="program1" onAction="#runProgram1" >
+               <HBox.margin>
+                  <Insets left="15.0" top="40.0" />
+               </HBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="100.0" text="Program2">
+               <HBox.margin>
+                  <Insets left="40.0" top="40.0" />
+               </HBox.margin>
+            </Button>
+            <VBox prefHeight="116.0" prefWidth="183.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="52.0" text="Step" fx:id="stepButton" onAction="#step">
+                     <VBox.margin>
+                        <Insets left="70.0" top="10.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="51.0" text="Run">
+                     <VBox.margin>
+                        <Insets left="70.0" top="15.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="52.0" text="Halt">
+                     <VBox.margin>
+                        <Insets left="70.0" top="15.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
          </children>
       </HBox>
-      <HBox prefHeight="100.0" prefWidth="200.0" spacing="11.0" GridPane.columnIndex="1">
+      <HBox prefHeight="109.0" prefWidth="614.0" spacing="11.0" GridPane.columnIndex="1">
          <children>
             <Label text="Run">
                <font>
@@ -146,11 +160,19 @@
                         <Font size="26.0" />
                      </font>
                   </Label>
-                  <Button fx:id="clear" mnemonicParsing="false" onAction="#clearLog" text="Clear">
+                  <Button fx:id="clear" mnemonicParsing="false" onAction="#clearLog" text="Clear logs">
                      <HBox.margin>
-                        <Insets left="900.0" top="5.0" />
+                        <Insets left="50.0" top="5.0" />
                      </HBox.margin>
                   </Button>
+                  <Label text="Console">
+                     <font>
+                        <Font size="26.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="280.0" />
+                     </HBox.margin>
+                  </Label>
                </children>
             </HBox>
          </top>
@@ -161,7 +183,13 @@
                </content>
             </ScrollPane>
          </center>
+         <right>
+            <ScrollPane prefHeight="251.0" prefWidth="603.0" BorderPane.alignment="CENTER">
+               <content>
+                  <TextField prefHeight="250.0" prefWidth="600.0" />
+               </content>
+            </ScrollPane>
+         </right>
       </BorderPane>
    </children>
 </GridPane>
-   
