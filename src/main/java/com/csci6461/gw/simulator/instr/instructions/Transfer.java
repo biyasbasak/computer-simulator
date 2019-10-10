@@ -59,7 +59,58 @@ public class Transfer {
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
             HashMap<String, String> instruction = this.getInstruction();
             int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
+
             registers.setPC(effectiveAddress);
+        }
+    }
+    public static class JSR extends Instruction {
+        @Override
+        public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
+            HashMap<String, String> instruction = this.getInstruction();
+            int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
+            Register GR = registers.getGeneralRegister(3);
+            GR.setByValue(registers.pc() + 1);
+            registers.setPC(effectiveAddress);
+        }
+    }
+    public static class RFS extends Instruction {
+        @Override
+        public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
+            HashMap<String, String> instruction = this.getInstruction();
+            int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
+            Register GR0 = registers.getGeneralRegister(0);
+            Register GR3 = registers.getGeneralRegister(3);
+            GR0.setByValue(effectiveAddress);
+            registers.setPC(GR3.value());
+        }
+    }
+    public static class SOB extends Instruction {
+        @Override
+        public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
+            HashMap<String, String> instruction = this.getInstruction();
+            String R = instruction.get("reg");
+            Register GR = registers.getGeneralRegister(Integer.parseInt(R, 2));
+            int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
+            GR.sub(1);
+            if (GR.value() > 0 ) {
+                registers.setPC(effectiveAddress);
+            } else {
+                registers.advance();
+            }
+        }
+    }
+    public static class JGE extends Instruction {
+        @Override
+        public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
+            HashMap<String, String> instruction = this.getInstruction();
+            String R = instruction.get("reg");
+            Register GR = registers.getGeneralRegister(Integer.parseInt(R, 2));
+            int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
+            if (GR.value() >= 0 ) {
+                registers.setPC(effectiveAddress);
+            } else {
+                registers.advance();
+            }
         }
     }
 }
