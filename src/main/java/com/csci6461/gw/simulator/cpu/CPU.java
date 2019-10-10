@@ -8,6 +8,7 @@ import com.csci6461.gw.simulator.util.Element;
 import com.csci6461.gw.simulator.instr.Instruction;
 import static com.csci6461.gw.simulator.instr.instructions.LoadStore.*;
 import static com.csci6461.gw.simulator.util.Exceptions.*;
+import com.csci6461.gw.simulator.cpu.devices.*;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -26,11 +27,19 @@ public class CPU {
 
     private ALU alu;
 
+    public HashMap<Integer, Device> devices;
+
     public CPU() {
         this.registers = new MachineRegisters();
         this.memory = new Memory();
         this.halted = false;
         this.alu = new ALU(this);
+        this.devices = new HashMap<>();
+        this.initializeDevices();
+    }
+
+    private void initializeDevices() {
+
     }
 
     /**
@@ -162,31 +171,29 @@ public class CPU {
      * 
      */
     public void step() {
-
+        try {
+            this.cycle();
+        } catch(MemoryException ex) {   // 3
+            // TODO
+        } catch(CPUException ex) {  // 0, 1, 2
+            // TODO
+        }
     }
 
     /**
      * Trigger trap
      */
-    public void trap(int trcode) {
-
-    }
-
-    /**
-     * Handles a trap 
-     */
-    private void trap_handler(int trap_code) {
+    public void trap(int trap_code) {
         int npc = registers.pc() + 1;
 
-        LOG.warn("Trap captured, trap_code: {}", trap_code);
+        LOG.info("Trap captured, trap_code: {}", trap_code);
 
-        memory.store(2, Element.fromInt(npc));
         Element table = memory.fetch(0);
-        try {
+        Element handler = memory.fetch(table.uvalue() + trap_code);
 
-        } catch(MemoryException ex) {
-            
-        }
+        registers.setPC(handler.uvalue());
+        memory.store(2, Element.fromInt(npc));
+        return;
     }
 
     /**
