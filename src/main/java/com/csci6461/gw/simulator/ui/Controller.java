@@ -91,6 +91,20 @@ public class Controller implements Initializable {
     public void clearLog(){
         LogPrinter.clear();
     }
+    /**
+     *  This is the console pane configuration
+     */
+    @FXML
+    private TextArea console;
+    @FXML
+    private Button test;
+
+    @FXML
+    private void testareainput() {
+        String text = console.getText();
+        System.out.println(text.toString());
+    }
+
 
     /**
      * binary instruction input configuration
