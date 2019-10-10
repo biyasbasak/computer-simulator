@@ -3,12 +3,16 @@ package com.csci6461.gw.simulator.cpu;
 import org.apache.logging.log4j.Logger; 
 import org.apache.logging.log4j.LogManager; 
 
+import com.csci6461.gw.simulator.util.Element; 
+
 /**
  * Arithmetic logic unit
  */
 public class ALU {
     private static Logger LOG = LogManager.getLogger("CPU.ALU");
     private static final String ZERO = "0000000000000000";
+    private static final String MINUS_ONE = "1111111111111111";
+    private static final String ONE = "0000000000000001";
 
     private CPU cpu;
 
@@ -26,66 +30,159 @@ public class ALU {
         cpu.getRegisters().setEqual(eq);
     }
 
-    public String addition(String addend1, String addend2) {
+    /**
+     * Perform binary addition
+     */
+    public Element addition(Element addend1, Element addend2) {
         return addition(addend1, addend2, true);
     }
 
     /**
      * Perform binary addition
      */
-    public String addition(String addend1, String addend2, boolean cc) {
-        String result = "";
-        boolean carry = false;
+    public Element addition(Element addend1, Element addend2, boolean cc) {
+        Element result = Element.fromString(ZERO);
 
-        assert addend1.length() == 16 && addend2.length() == 16;
+        int cin = 0, cout = 0;
+        int carry = 0;
+
         for(int i = 15; i >= 0; i--) {
-            if(addend1.charAt(i) == '1' && addend2.charAt(i) == '1') {
-                if(carry) {
-                    result = "1" + result;
-                } else {
-                    result = "0" + result;
-                }
-                carry = true;
-            } else if((addend1.charAt(i) == '0' && addend2.charAt(i) == '1') 
-                    || (addend1.charAt(i) == '1' && addend2.charAt(i) == '0')) {
-                if(carry) {
-                    result = "0" + result;
-                } else {
-                    result = "1" + result;
-                    carry = false;
-                }
-            } else {
-                if(carry) {
-                    result = "1" + result;
-                } else {
-                    result = "0" + result;
-                }
-                carry = false;
+            int r = carry + (addend1.get(i) ? 1 : 0) + (addend2.get(i) ? 1 : 0);
+            if(r >= 2) {
+                carry = 1;
+            }
+
+            if((r & 1) == 1) {
+                result.set(i, true);
+            }
+
+            if(i == 1) {
+                cin = carry;
+            } else if(i == 0) {
+                cout = carry;
             }
         }
+
         if(cc) {
-            updateCC(carry, false, false, result.equals(ZERO));
+            updateCC(cin != cout, false, false, result.toString().equals(ZERO));
         }
         return result;
-    }
-
-    public String subtraction(String minuend, String subtrahend) {
-        return subtraction(minuend, subtrahend, true);
     }
 
     /**
-     * Perform the subtraction
+     * Perform bitwise xor
      */
-    public String subtraction(String minuend, String subtrahend, boolean cc) {
-        String result = "";
-        boolean borrow = false;
+    public Element xor(Element e1, Element e2) {
+        return xor(e1, e2, true);
+    }
 
-        assert minuend.length() == 16 && subtrahend.length() == 16;
+    /**
+     * Perform bitwise xor
+     */
+    public Element xor(Element e1, Element e2, boolean cc) {
+        Element result = Element.fromString(ZERO);
+
         for(int i = 15; i >= 0; i--) {
-            if(minuend.charAt(i) == '1') {
+            result.set(i, e1.get(i) ^ e2.get(i));
+        }
 
-            }
+        if(cc) {
+            updateCC(false, false, false, result.toString().equals(ZERO));
         }
         return result;
+    }
+
+    /**
+     * Perform bitwise and
+     */
+    public Element and(Element e1, Element e2) {
+        return and(e1, e2, true);
+    }
+
+    /**
+     * Perform bitwise and
+     */
+    public Element and(Element e1, Element e2, boolean cc) {
+        Element result = Element.fromString(ZERO);
+
+        for(int i = 15; i >= 0; i--) {
+            result.set(i, e1.get(i) & e2.get(i));
+        }
+
+        if(cc) {
+            updateCC(false, false, false, result.toString().equals(ZERO));
+        }
+        return result;
+    }
+
+    /**
+     * Perform bitwise or
+     */
+    public Element or(Element e1, Element e2) {
+        return or(e1, e2, true);
+    }
+
+    /**
+     * Perform bitwise or
+     */
+    public Element or(Element e1, Element e2, boolean cc) {
+        Element result = Element.fromString(ZERO);
+
+        for(int i = 15; i >= 0; i--) {
+            result.set(i, e1.get(i) | e2.get(i));
+        }
+
+        if(cc) {
+            updateCC(false, false, false, result.toString().equals(ZERO));
+        }
+        return result;
+    }
+
+    /**
+     * Perform bitwise not
+     */
+    public Element not(Element e) {
+        return not(e, true);
+    }
+
+    /**
+     * Perform bitwise not 
+     */
+    public Element not(Element e, boolean cc) {
+        Element result = Element.fromString(ZERO);
+
+        for(int i = 15; i >= 0; i--) {
+            result.set(i, !e.get(i));
+        }
+
+        if(cc) {
+            updateCC(false, false, false, result.toString().equals(ZERO));
+        }
+        return result;
+    }
+
+    /**
+     * Test
+     */
+    public void test(Element e1, Element e2) {
+        updateCC(false, false, false, e1.toString().equals(e2.toString()));
+        return;
+    }
+
+    /**
+     * 2's complement negation
+     */
+    public Element negate(Element e) {
+        Element result = e.clone();
+        result.xor(Element.fromString(MINUS_ONE));
+        return addition(result, Element.fromString(ONE), false);
+    }
+
+    /**
+     * Perform binary subtraction
+     */
+    public Element subtraction(Element minuend, Element subtrahend, boolean cc) {
+        Element neg_subtrahend = negate(subtrahend);
+        return addition(minuend, neg_subtrahend, cc);   // a - b = a + (-b)
     }
 }

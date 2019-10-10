@@ -41,10 +41,21 @@ public class BitOperations {
      */
     public static int bitsToInt(BitSet bits, int nbits) {
         int num = 0;
-        for(int i = nbits - 1; i >= 0; i--) {
-            if(bits.get(i)) {
-                num = num | (1 << (nbits - (i + 1)));
+
+        if(!bits.get(0)) {
+            for(int i = nbits - 1; i >= 0; i--) {
+                if(bits.get(i)) {
+                    num = num | (1 << (nbits - (i + 1)));
+                }
             }
+        } else {  // minus
+            for(int i = nbits -1; i >= 0; i--) {
+                if(!bits.get(i)) {
+                    num = num | (1 << (nbits - (i + 1)));
+                }
+            }
+            num += 1;
+            num = -num;
         }
         return num;
     }

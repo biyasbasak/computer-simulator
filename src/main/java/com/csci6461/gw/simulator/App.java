@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class App extends Application {
-    private static Logger LOG = LogManager.getLogger("App.App");
+    //private static Logger LOG = LogManager.getLogger("App.App");
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/simulator.fxml"));

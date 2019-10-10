@@ -192,7 +192,7 @@ public class Controller implements Initializable {
             MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
             String newValue = t.getNewValue();
             int address = Integer.parseInt(registerChange.getMemoryId());
-            memory.set(address, newValue);
+            memory.set_direct(address, newValue);
             LOG.info("Setting memory @ {} to {}.", address, Integer.parseInt(newValue, 2));
             update();
         });
@@ -202,14 +202,14 @@ public class Controller implements Initializable {
             MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
             int newValue = Integer.parseInt(t.getNewValue());
             int address = Integer.parseInt(registerChange.getMemoryId());
-            memory.set(address, intToString(newValue, 16));
+            memory.set_direct(address, intToString(newValue, 16));
             LOG.info("Setting memory @ {} to {}.", address, newValue);
             update();
         });
 
         memory.initialize();
         for (int i = 0; i < 2048; i++) {
-            Element memoryChunk = memory.fetch(i);
+            Element memoryChunk = memory.fetch_direct(i);
             String j = String.valueOf(i);
             memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(),Integer.toString(memoryChunk.value())));
         }

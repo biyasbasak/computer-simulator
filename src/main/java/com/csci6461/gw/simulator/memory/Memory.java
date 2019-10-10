@@ -39,6 +39,14 @@ public class Memory {
     }
 
     /**
+     * Store memory directly by binary string
+     */
+    public void set_direct(int index, String word) {
+        Element elem = Element.fromString(word);
+        this.store_direct(index, elem);
+    }
+
+    /**
      * Store memory 
      */
     public void store(int index, Element elem) {

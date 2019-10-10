@@ -10,6 +10,8 @@ import com.csci6461.gw.simulator.util.Element;
 import org.apache.logging.log4j.LogManager; 
 import org.apache.logging.log4j.Logger; 
 
+import java.util.HashMap;
+
 public class Arithmetic {
     private static Logger LOG = LogManager.getLogger("Instr.Arithmetic");
 
@@ -58,6 +60,11 @@ public class Arithmetic {
     public static class TRR extends Instruction {
         @Override
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
+            HashMap<String, String> instruction = this.getInstruction();
+            Register rx = registers.getGeneralRegister(Integer.parseInt(instruction.get("Rx"), 2));
+            Register ry = registers.getGeneralRegister(Integer.parseInt(instruction.get("Ry"), 2));
+            LOG.info("TRR: {} == {}", rx.value(), ry.value());
+            cpu.getALU().test(rx, ry);
             return;
         }
     }
@@ -65,6 +72,12 @@ public class Arithmetic {
     public static class AND extends Instruction {
         @Override
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
+            HashMap<String, String> instruction = this.getInstruction();
+            Register rx = registers.getGeneralRegister(Integer.parseInt(instruction.get("Rx"), 2));
+            Register ry = registers.getGeneralRegister(Integer.parseInt(instruction.get("Ry"), 2));
+            Element result = cpu.getALU().and(rx, ry);
+            LOG.info("AND: {} & {} = {}", rx.value(), ry.value(), result.value());
+            rx.set(result);
             return;
         }
     }
@@ -72,6 +85,12 @@ public class Arithmetic {
     public static class OR extends Instruction {
         @Override
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
+            HashMap<String, String> instruction = this.getInstruction();
+            Register rx = registers.getGeneralRegister(Integer.parseInt(instruction.get("Rx"), 2));
+            Register ry = registers.getGeneralRegister(Integer.parseInt(instruction.get("Ry"), 2));
+            Element result = cpu.getALU().or(rx, ry);
+            LOG.info("OR: {} & {} = {}", rx.value(), ry.value(), result.value());
+            rx.set(result);
             return;
         }
     }
@@ -79,6 +98,11 @@ public class Arithmetic {
     public static class NOT extends Instruction {
         @Override
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
+            HashMap<String, String> instruction = this.getInstruction();
+            Register rx = registers.getGeneralRegister(Integer.parseInt(instruction.get("Rx"), 2));
+            Element result = cpu.getALU().not(rx);
+            LOG.info("NOT: {} = {}", rx.value(), result.value());
+            rx.set(result);
             return;
         }
     }
