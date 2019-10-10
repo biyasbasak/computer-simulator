@@ -13,11 +13,6 @@ public class Element extends BitSet {
     private int _nbits;
 
     /**
-     * Set to true if wrap around is triggered.
-     */
-    private Boolean _wrapped;
-
-    /**
      * Class constructor
      * @param   nbits the number of bits inside the register
      */
@@ -38,7 +33,7 @@ public class Element extends BitSet {
      */
     public void add(int addend) {
         int value = wraparound(this.value() + addend);
-        this.set(BitOperations.intToBits(value, _nbits));
+        this.set(BitOperations.intToBits(value, _nbits, true));
     }
 
     /**
@@ -46,7 +41,7 @@ public class Element extends BitSet {
      */
     public void sub(int subtraction) {
         int value = wraparound(this.value() - subtraction);
-        this.set(BitOperations.intToBits(value, _nbits));
+        this.set(BitOperations.intToBits(value, _nbits, true));
     }
 
     /**
@@ -54,7 +49,7 @@ public class Element extends BitSet {
      */
     public void mult(int multiplier) {
         int value = wraparound(this.value() * multiplier);
-        this.set(BitOperations.intToBits(value, _nbits));
+        this.set(BitOperations.intToBits(value, _nbits, true));
     }
 
     /**
@@ -62,7 +57,7 @@ public class Element extends BitSet {
      */
     public void div(int divisor) {
         int value = wraparound(this.value() / divisor);
-        this.set(BitOperations.intToBits(value, _nbits));
+        this.set(BitOperations.intToBits(value, _nbits, true));
     }
 
     /**
@@ -70,7 +65,7 @@ public class Element extends BitSet {
      */
     public void mod(int divisor) {
         int value = wraparound(this.value() / divisor);
-        this.set(BitOperations.intToBits(value, _nbits));
+        this.set(BitOperations.intToBits(value, _nbits, true));
     }
 
     /**
@@ -84,6 +79,13 @@ public class Element extends BitSet {
      * Get the integer representation of the element.
      */
     public int value() {
+        return BitOperations.bitsToInt(this, _nbits, true);
+    }
+
+    /**
+     * Get the unsigned integer representation of the element.
+     */
+    public int uvalue() {
         return BitOperations.bitsToInt(this, _nbits);
     }
 
@@ -107,7 +109,7 @@ public class Element extends BitSet {
      * Set a element by its integer representation.
      */
     public void setByValue(int value) {
-        this.set(BitOperations.intToBits(wraparound(value), _nbits));
+        this.set(BitOperations.intToBits(wraparound(value), _nbits, true));
     }
 
     /**
@@ -141,7 +143,7 @@ public class Element extends BitSet {
      */
     public static Element fromString(String s, int nbits) {
         Element e = new Element(nbits);
-        e.set(BitOperations.stringToBits(s));
+        e.set(BitOperations.stringToBits(s, nbits));
         return e;
     }
 
@@ -150,5 +152,21 @@ public class Element extends BitSet {
      */
     public static Element fromString(String s) {
         return fromString(s, 16);
+    }
+
+    /**
+     * Create an element from integer
+     */
+    public static Element fromInt(int value, int nbits) {
+        Element e = new Element(nbits);
+        e.setByValue(value);
+        return e;
+    }
+
+    /**
+     * Create an 16 bit element from integer
+     */
+    public static Element fromInt(int value) {
+        return fromInt(value, 16);
     }
 }

@@ -18,42 +18,74 @@ public class Arithmetic {
     public static class AMR extends Instruction {
         @Override
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
-            return;
+            HashMap<String, String> instruction = this.getInstruction();
+            Register generalRegister = registers.getGeneralRegister(Integer.parseInt(instruction.get("reg"), 2));
+            int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
+            registers.getAllRegisters().get("MAR").setByValue(effectiveAddress);
+            Element value = memory.fetch(effectiveAddress);
+            registers.getAllRegisters().get("MBR").setByValue(value.value());
+            Element result = cpu.getALU().addition(generalRegister, value);
+            LOG.info("AMR : {} + {} = {}", generalRegister.value(), value.value(), result.value());
+            generalRegister.set(result);
+            registers.advance();
         }
     }
 
     public static class SMR extends Instruction {
         @Override
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
-            return;
+            HashMap<String, String> instruction = this.getInstruction();
+            Register generalRegister = registers.getGeneralRegister(Integer.parseInt(instruction.get("reg"), 2));
+            int effectiveAddress = memory.calculateEffectiveAddress(registers, instruction);
+            registers.getAllRegisters().get("MAR").setByValue(effectiveAddress);
+            Element value = memory.fetch(effectiveAddress);
+            registers.getAllRegisters().get("MBR").setByValue(value.value());
+            Element result = cpu.getALU().subtraction(generalRegister, value);
+            LOG.info("SMR : {} + {} = {}", generalRegister.value(), value.value(), result.value());
+            generalRegister.set(result);
+            registers.advance();
         }
     }
 
     public static class AIR extends Instruction {
         @Override
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
-            return;
+            HashMap<String, String> instruction = this.getInstruction();
+            Register generalRegister = registers.getGeneralRegister(Integer.parseInt(instruction.get("reg"), 2));
+            Element immed = Element.fromString(instruction.get("address"));
+            Element result = cpu.getALU().addition(generalRegister, immed);
+            LOG.info("AIR: {} + {} = {}", generalRegister.value(), immed.value(), result.value());
+            generalRegister.set(result);
+            registers.advance();
         }
     }
 
     public static class SIR extends Instruction {
         @Override
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
-            return;
+            HashMap<String, String> instruction = this.getInstruction();
+            Register generalRegister = registers.getGeneralRegister(Integer.parseInt(instruction.get("reg"), 2));
+            Element immed = Element.fromString(instruction.get("address"));
+            Element result = cpu.getALU().subtraction(generalRegister, immed);
+            LOG.info("SIR: {} + {} = {}", generalRegister.value(), immed.value(), result.value());
+            generalRegister.set(result);
+            registers.advance();
         }
     }
 
     public static class MLT extends Instruction {
         @Override
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
-            return;
+            // TODO
+            registers.advance();
         }
     }
 
     public static class DVD extends Instruction {
         @Override
         public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
-            return;
+            // TODO
+            registers.advance();
         }
     }
 
@@ -65,7 +97,7 @@ public class Arithmetic {
             Register ry = registers.getGeneralRegister(Integer.parseInt(instruction.get("Ry"), 2));
             LOG.info("TRR: {} == {}", rx.value(), ry.value());
             cpu.getALU().test(rx, ry);
-            return;
+            registers.advance();
         }
     }
 
@@ -78,7 +110,7 @@ public class Arithmetic {
             Element result = cpu.getALU().and(rx, ry);
             LOG.info("AND: {} & {} = {}", rx.value(), ry.value(), result.value());
             rx.set(result);
-            return;
+            registers.advance();
         }
     }
 
@@ -89,9 +121,9 @@ public class Arithmetic {
             Register rx = registers.getGeneralRegister(Integer.parseInt(instruction.get("Rx"), 2));
             Register ry = registers.getGeneralRegister(Integer.parseInt(instruction.get("Ry"), 2));
             Element result = cpu.getALU().or(rx, ry);
-            LOG.info("OR: {} & {} = {}", rx.value(), ry.value(), result.value());
+            LOG.info("OR: {} | {} = {}", rx.value(), ry.value(), result.value());
             rx.set(result);
-            return;
+            registers.advance();
         }
     }
 
@@ -103,7 +135,7 @@ public class Arithmetic {
             Element result = cpu.getALU().not(rx);
             LOG.info("NOT: {} = {}", rx.value(), result.value());
             rx.set(result);
-            return;
+            registers.advance();
         }
     }
 }

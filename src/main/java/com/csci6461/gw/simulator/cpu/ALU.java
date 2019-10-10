@@ -181,8 +181,31 @@ public class ALU {
     /**
      * Perform binary subtraction
      */
+    public Element subtraction(Element minuend, Element subtrahend) {
+        return subtraction(minuend, subtrahend, true);
+    }
+
+    /**
+     * Perform binary subtraction
+     */
     public Element subtraction(Element minuend, Element subtrahend, boolean cc) {
         Element neg_subtrahend = negate(subtrahend);
         return addition(minuend, neg_subtrahend, cc);   // a - b = a + (-b)
+    }
+    
+    /**
+     * Perform multiplication
+     */
+    public Element multiply(Element multiplicand, Element multiplier, boolean cc) {
+        // TODO
+        return null;
+    }
+
+    /**
+     * Perform division
+     */
+    public Element divide(Element dividend, Element divisor, boolean cc) {
+        // TODO
+        return null;
     }
 }

@@ -9,9 +9,14 @@ import com.csci6461.gw.simulator.instr.Instruction;
 import static com.csci6461.gw.simulator.instr.instructions.LoadStore.*;
 import static com.csci6461.gw.simulator.util.Exceptions.*;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import java.util.HashMap;
 
 public class CPU {
+    private static Logger LOG = LogManager.getLogger("CPU.CPU");
+
     private MachineRegisters registers;
     private Memory memory;
 
@@ -73,12 +78,16 @@ public class CPU {
                 break;
             case 010:
                 ins = new JZ();
+                break;
             case 011:
                 ins = new JNE();
+                break;
             case 012:
                 ins = new JCC();
+                break;
             case 013:
                 ins = new JMA();
+                break;
             default:
                 throw new CPUException(registers.pc(), "Unknown opcode");
         }
@@ -138,9 +147,51 @@ public class CPU {
     }
 
     /**
+     * 
+     */
+    public void step() {
+
+    }
+
+    /**
      * Trigger trap
      */
     public void trap(int trcode) {
 
+    }
+
+    /**
+     * Handles a trap 
+     */
+    private void trap_handler(int trap_code) {
+        int npc = registers.pc() + 1;
+
+        LOG.warn("Trap captured, trap_code: {}", trap_code);
+
+        memory.store(2, Element.fromInt(npc));
+        Element table = memory.fetch(0);
+        try {
+
+        } catch(MemoryException ex) {
+            
+        }
+    }
+
+    /**
+     * Handles a machine fault
+     */
+    private void fault_handler(int fault_code) {
+        int npc = registers.pc() + 1;
+
+        LOG.warn("Machine fault captured, fault code: {}", fault_code);
+
+        memory.store(4, Element.fromInt(npc));
+        Element handler = memory.fetch(1);
+        if(handler.uvalue() >= memory.size()) {
+            LOG.error("Double fault occured in fault handler, halting");
+            this.halt();
+        }
+        registers.setFault(fault_code);
+        registers.setPC(handler.uvalue());
     }
 }

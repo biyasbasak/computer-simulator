@@ -125,4 +125,11 @@ public class Memory {
         }
         return effectiveAddress;
     }
+
+    /**
+     * Get the size of memory
+     */
+    public int size() {
+        return this.memorySize;
+    }
 }

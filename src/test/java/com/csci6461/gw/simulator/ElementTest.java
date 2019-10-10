@@ -37,7 +37,7 @@ public class ElementTest {
         b.set(4);
         b.set(7);
         w.set(b);
-        assertTrue(w.value() == 169);
+        assertTrue(w.value() == -87);
     }
 }
 

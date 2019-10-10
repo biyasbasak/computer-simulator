@@ -106,7 +106,7 @@ public class MachineRegisters {
      * Get the value of PC 
      */
     public int pc() {
-        return _Regs.get("PC").value();
+        return _Regs.get("PC").uvalue();
     }
 
     /**

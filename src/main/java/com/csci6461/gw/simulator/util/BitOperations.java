@@ -10,18 +10,26 @@ public class BitOperations {
      * Convert a number to a 16-bit BitSet
      */
     public static BitSet intToBits(int num) {
-        return intToBits(num, 16);
+        return intToBits(num, 16, false);
     }
 
     /**
      * Convert a number to a BitSet
      */
-    public static BitSet intToBits(int num, int nbits) {
+    public static BitSet intToBits(int num, int nbits, boolean signed) {
+        boolean minus = false;
+        if(signed && num < 0) {
+            minus = true;
+            num = (-num) - 1;
+        }
+
         BitSet bits = new BitSet();
         int idx = nbits - 1;
-        while(num != 0 && idx >= 0) {
+        while(idx >= 0) {
             if(num % 2 == 1) {
-                bits.set(idx);
+                bits.set(idx, !minus);
+            } else {
+                bits.set(idx, minus);
             }
             num >>>= 1;
             idx -= 1;
@@ -33,16 +41,23 @@ public class BitOperations {
      * Convert a BitSet to a 16-bit number
      */
     public static int bitsToInt(BitSet bits) {
-        return bitsToInt(bits, 16);
+        return bitsToInt(bits, 16, false);
+    }
+
+    /**
+     * 
+     */
+    public static int bitsToInt(BitSet bits, int nbits) {
+        return bitsToInt(bits, nbits, false);
     }
 
     /**
      * Convert a BitSet to a number
      */
-    public static int bitsToInt(BitSet bits, int nbits) {
+    public static int bitsToInt(BitSet bits, int nbits, boolean signed) {
         int num = 0;
 
-        if(!bits.get(0)) {
+        if(!bits.get(0) || !signed) {
             for(int i = nbits - 1; i >= 0; i--) {
                 if(bits.get(i)) {
                     num = num | (1 << (nbits - (i + 1)));
@@ -63,11 +78,11 @@ public class BitOperations {
     /**
      * Convert a string to a BitSet
      */
-    public static BitSet stringToBits(String s) {
+    public static BitSet stringToBits(String s, int nbits) {
         BitSet b = new BitSet();
         for(int i = 0; i < s.length(); i++) {
-            if(s.charAt(i) == '1') {
-                b.set(i);
+            if(s.charAt(s.length() - i - 1) == '1') {
+                b.set(nbits - i - 1);
             }
         }
         return b;
