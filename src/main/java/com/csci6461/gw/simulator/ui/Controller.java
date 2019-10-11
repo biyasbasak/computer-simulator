@@ -131,7 +131,7 @@ public class Controller implements Initializable {
      */
     @FXML
     private TextArea console;
-<<<<<<< HEAD
+    
     @FXML
     private Button test;
 
@@ -152,8 +152,6 @@ public class Controller implements Initializable {
     public ReentrantLock getLock() {
         return lock;
     }
-=======
->>>>>>> 80e4df4fd1575ec2f2a266a410b475eb36fc9377
 
     /**
      * binary instruction input configuration
@@ -267,6 +265,7 @@ public class Controller implements Initializable {
         LogPrinter.setTextFlow(logFlow);
         LogPrinter.setScrollPane(scrollPane);
 
+        /* Simulate terminal behaviour */
         console.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
@@ -277,6 +276,7 @@ public class Controller implements Initializable {
                         bufferQ.removeLast();
                     }
                 } else if(keyEvent.getCode() == KeyCode.ENTER) {
+                    bufferQ.add(10);    // new-line
                     lock.lock();
                     cpu.commit(bufferQ);
                     input_cond.signalAll();
