@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock; 
 
 /**
  * This is the Controller Class
@@ -40,7 +42,7 @@ public class Controller implements Initializable {
 
     private static Logger LOG = LogManager.getLogger("UI.Controller");
 
-    private CPU cpu = new CPU();
+    private CPU cpu = new CPU(this);
     /**
      * This is the Memory tableview configuration
      */
@@ -82,6 +84,10 @@ public class Controller implements Initializable {
 
     private Deque<Integer> bufferQ = new ArrayDeque<Integer>();
 
+    private ReentrantLock lock = new ReentrantLock();
+
+    private Condition input_cond = lock.newCondition();
+
     /**
      * This is the log text field configuration
      */
@@ -113,6 +119,17 @@ public class Controller implements Initializable {
         System.out.println(text.toString());
     }
 
+    public CPU getCPU() {
+        return cpu;
+    }
+
+    public Condition getInputCond() {
+        return input_cond;
+    }
+
+    public ReentrantLock getLock() {
+        return lock;
+    }
 
     /**
      * binary instruction input configuration
@@ -186,7 +203,7 @@ public class Controller implements Initializable {
             Controller ctrl;
             public CPUTask(Controller c) { ctrl = c; }
             public void run() {
-                ctrl.cpu.step();
+                ctrl.getCPU().step();
                 Platform.runLater(() -> {
                     ctrl.update();
                 });
@@ -236,8 +253,10 @@ public class Controller implements Initializable {
                         bufferQ.removeLast();
                     }
                 } else if(keyEvent.getCode() == KeyCode.ENTER) {
-                    // TODO
-                    bufferQ.clear();
+                    lock.lock();
+                    cpu.commit(bufferQ);
+                    input_cond.signalAll();
+                    lock.unlock();
                 }
             }
         });
@@ -330,5 +349,12 @@ public class Controller implements Initializable {
             index += 1;
         }
         registerTableView.setItems(registerTableObservableList);
+    }
+
+    public void appendToConsole(Integer ch) {
+        char a = (char)(ch.intValue());
+        String s = console.getText() + a;
+        console.setText(s);
+        return;
     }
 }

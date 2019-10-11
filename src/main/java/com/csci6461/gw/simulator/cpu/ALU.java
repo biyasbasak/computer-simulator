@@ -50,6 +50,8 @@ public class ALU {
             int r = carry + (addend1.get(i) ? 1 : 0) + (addend2.get(i) ? 1 : 0);
             if(r >= 2) {
                 carry = 1;
+            } else {
+                carry = 0;
             }
 
             if((r & 1) == 1) {

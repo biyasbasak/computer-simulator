@@ -1,19 +1,25 @@
 package com.csci6461.gw.simulator.cpu;
 
 import com.csci6461.gw.simulator.instr.Decoder;
-import com.csci6461.gw.simulator.instr.instructions.Transfer.*;
 import com.csci6461.gw.simulator.reg.MachineRegisters;
 import com.csci6461.gw.simulator.memory.Memory;
 import com.csci6461.gw.simulator.util.Element;
 import com.csci6461.gw.simulator.instr.Instruction;
-import static com.csci6461.gw.simulator.instr.instructions.LoadStore.*;
 import static com.csci6461.gw.simulator.util.Exceptions.*;
 import com.csci6461.gw.simulator.cpu.devices.*;
+import com.csci6461.gw.simulator.ui.Controller;
+import static com.csci6461.gw.simulator.instr.instructions.Transfer.*;
+import static com.csci6461.gw.simulator.instr.instructions.LoadStore.*;
+import static com.csci6461.gw.simulator.instr.instructions.Arithmetic.*;
+import static com.csci6461.gw.simulator.instr.instructions.IO.*;
+import static com.csci6461.gw.simulator.instr.instructions.Miscellaneous.*;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.HashMap;
+import java.util.Deque;
+
 
 public class CPU {
     private static Logger LOG = LogManager.getLogger("CPU.CPU");
@@ -29,19 +35,21 @@ public class CPU {
 
     private HashMap<Integer, Device> devices;
 
-    private Keyboard kbd;
+    private Controller ctrler;
 
-    public CPU() {
+    public CPU(Controller ctrl) {
         this.registers = new MachineRegisters();
         this.memory = new Memory();
         this.halted = false;
         this.alu = new ALU(this);
+        this.ctrler = ctrl;
         this.devices = new HashMap<>();
         this.initializeDevices();
     }
 
     private void initializeDevices() {
-
+        devices.put(0, new Keyboard(0, "keyboard", this.ctrler));
+        devices.put(1, new Printer(1, "printer", this.ctrler));
     }
 
     /**
@@ -72,6 +80,9 @@ public class CPU {
         int opCode = Integer.parseInt(instructionData.get("opCode"), 2);
         Instruction ins;
         switch (opCode) {
+            case 0:
+                ins = new HLT();
+                break;
             case 1:
                 ins = new LDR();
                 break;
@@ -110,6 +121,24 @@ public class CPU {
                 break;
             case 017:
                 ins = new JGE();
+                break;
+            case 4:
+                ins = new AMR();
+                break;
+            case 5:
+                ins = new SMR();
+                break;
+            case 6:
+                ins = new AIR();
+                break;
+            case 7:
+                ins = new SIR();
+                break;
+            case 061:
+                ins = new IN();
+                break;
+            case 062:
+                ins = new OUT();
                 break;
             default:
                 throw new CPUException(registers.pc(), "Unknown opcode");
@@ -214,5 +243,35 @@ public class CPU {
         }
         registers.setFault(fault_code);
         registers.setPC(handler.uvalue());
+    }
+
+    /**
+     * Commit an input buffer
+     */
+    public void commit(Deque<Integer> bufQ) {
+        Keyboard kbd = (Keyboard)devices.get(0);
+        kbd.commit(bufQ);
+    }
+
+    /**
+     * Input from device 
+     */
+    public Element input(int devid) {
+        Device dev = devices.get(devid);
+        if(dev == null) {
+            return Element.fromInt(0);
+        }
+        return dev.input();
+    }
+    
+    /**
+     * Output to device 
+     */
+    public void output(int devid, Element elem) {
+        Device dev = devices.get(devid);
+        if(dev == null) {
+            return;
+        }
+        dev.output(elem);
     }
 }
