@@ -132,4 +132,11 @@ public class Memory {
     public int size() {
         return this.memorySize;
     }
+
+    /**
+     * Get the cache object
+     */
+    public Cache getCache() {
+        return cache;
+    }
 }
