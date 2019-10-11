@@ -1,6 +1,7 @@
 package com.csci6461.gw.simulator.ui;
 
 import com.csci6461.gw.simulator.cpu.CPU;
+import com.csci6461.gw.simulator.memory.Cache;
 import com.csci6461.gw.simulator.memory.Memory;
 import com.csci6461.gw.simulator.reg.MachineRegisters;
 import com.csci6461.gw.simulator.reg.Register;
@@ -63,6 +64,26 @@ public class Controller implements Initializable {
     // get a memory object, for initialization and further usage
     private Memory memory = cpu.getMemory();
     /**
+     * This is the cache tableview configuration
+     */
+    // config the Cache table
+    @FXML
+    private TableView<CacheTable> cacheTableView;
+    // config the cache table columns
+    @FXML
+    private TableColumn<CacheTable, String> cacheIndex;
+    @FXML
+    private TableColumn<CacheTable, String> cacheTag;
+    @FXML
+    private TableColumn<CacheTable, String> cacheOffset;
+    @FXML
+    private TableColumn<CacheTable, String> cacheBinary;
+    // create a observablelist object to present cache data
+    private ObservableList<CacheTable> cacheTableObservableList = FXCollections.observableArrayList();
+    // get a cache object, for initialization and further usage
+    private Cache cache = memory.getCache();
+
+    /**
      * This is the Memory tableview configuration
      */
     @FXML
@@ -104,15 +125,6 @@ public class Controller implements Initializable {
      */
     @FXML
     private TextArea console;
-    @FXML
-    private Button test;
-
-    @FXML
-    private void testareainput() {
-        String text = console.getText();
-        System.out.println(text.toString());
-    }
-
 
     /**
      * binary instruction input configuration
@@ -330,5 +342,13 @@ public class Controller implements Initializable {
             index += 1;
         }
         registerTableView.setItems(registerTableObservableList);
+    }
+    // cache initialization
+    public void initializeCache(){
+        cacheIndex.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Index"));
+        cacheTag.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Tag"));
+        cacheOffset.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Offset"));
+        cacheBinary.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("binary"));
+
     }
 }

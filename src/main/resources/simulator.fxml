@@ -57,13 +57,33 @@
             </HBox>
          </top>
          <center>
-            <TableView fx:id="memoryTableView" editable="true" prefHeight="372.0" prefWidth="505.0" BorderPane.alignment="CENTER">
-               <columns>
-                  <TableColumn fx:id="memoryId" editable="false" prefWidth="65.0" text="id" />
-                  <TableColumn fx:id="memoryBinary" minWidth="0.0" prefWidth="389.0" text="binary" />
-                  <TableColumn fx:id="memoryDecimal" prefWidth="145.0" text="decimal" />
-               </columns>
-            </TableView>
+            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+              <tabs>
+                <Tab text="                                Memory                               ">
+                     <content>
+                        <TableView fx:id="memoryTableView" editable="true" prefHeight="372.0" prefWidth="505.0">
+                           <columns>
+                              <TableColumn fx:id="memoryId" editable="false" prefWidth="65.0" text="id" />
+                              <TableColumn fx:id="memoryBinary" minWidth="0.0" prefWidth="389.0" text="binary" />
+                              <TableColumn fx:id="memoryDecimal" prefWidth="145.0" text="decimal" />
+                           </columns>
+                        </TableView>
+                     </content>
+                </Tab>
+                <Tab text="                                    Cache                                   ">
+                     <content>
+                        <TableView prefHeight="200.0" prefWidth="200.0" fx:id="cacheTableView">
+                          <columns>
+                            <TableColumn prefWidth="67.0" text="Index" fx:id="cacheIndex"/>
+                            <TableColumn text="Offset" fx:id="cacheOffset"/>
+                              <TableColumn prefWidth="169.0" text="Tag" fx:id="cacheTag"/>
+                              <TableColumn prefWidth="284.0" text="binary" fx:id="cacheBinary"/>
+                          </columns>
+                        </TableView>
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
          </center>
       </BorderPane>
       <HBox prefHeight="100.0" prefWidth="200.0">
@@ -173,7 +193,6 @@
                         <Insets left="280.0" />
                      </HBox.margin>
                   </Label>
-                  <Button mnemonicParsing="false" text="test" fx:id="test" onAction="#testareainput"/>
                </children>
             </HBox>
          </top>
@@ -187,7 +206,7 @@
          <right>
             <ScrollPane prefHeight="251.0" prefWidth="603.0" BorderPane.alignment="CENTER">
                <content>
-                  <TextArea prefHeight="238.0" prefWidth="602.0" fx:id="console"/>
+                  <TextArea fx:id="console" prefHeight="238.0" prefWidth="602.0" />
                </content>
             </ScrollPane>
          </right>
