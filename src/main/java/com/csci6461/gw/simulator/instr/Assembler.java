@@ -4,6 +4,8 @@ import static com.csci6461.gw.simulator.util.Exceptions.*;
 import static com.csci6461.gw.simulator.util.BitOperations.*;
 import static com.csci6461.gw.simulator.util.StringOperations.*;
 import com.csci6461.gw.simulator.cpu.CPU;
+import com.csci6461.gw.simulator.util.Element;
+
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.List;
@@ -12,6 +14,9 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+/**
+ * LIAR: Low-quality Improvised Assembler Reloaded
+ */
 public class Assembler {
     private static Logger LOG = LogManager.getLogger("Ins.Assembler");
 
@@ -19,68 +24,83 @@ public class Assembler {
      * Opcodes by its name.
      */
     private static final HashMap<String, Integer> OPCODE_LIST = new HashMap<String, Integer>() {{
-       put("HLT", 0);
-       put("TRAP", 30);
-       put("LDR", 1);
-       put("STR", 2);
-       put("LDA", 3);
-       put("LDX", 33);
-       put("STX", 34);
-       put("JZ", 8);
-       put("JNE", 9);
-       put("JCC", 10);
-       put("JMA", 11);
-       put("JSR", 12);
-       put("RFS", 13);
-       put("SOB", 14);
-       put("JGE", 15);
-       put("AMR", 4);
-       put("SMR", 5);
-       put("AIR", 6);
-       put("SIR", 7);
-       put("MLT", 16);
-       put("DVD", 17);
-       put("TRR", 18);
-       put("AND", 19);
-       put("ORR", 20);
-       put("NOT", 21);
-       put("SRC", 25);
-       put("RRC", 26);
-       put("IN", 49);
-       put("OUT", 50);
-       put("CHK", 51);
-       put("FADD", 27);
-       put("FSUB", 28);
-       put("VADD", 29);
-       put("VSUB", 30);
-       put("CNVRT", 31);
-       put("LDFR", 40);
-       put("STFR", 41);
+        put("HLT", 0);
+        put("TRAP", 30);
+        put("LDR", 1);
+        put("STR", 2);
+        put("LDA", 3);
+        put("LDX", 33);
+        put("STX", 34);
+        put("JZ", 8);
+        put("JNE", 9);
+        put("JCC", 10);
+        put("JMA", 11);
+        put("JSR", 12);
+        put("RFS", 13);
+        put("SOB", 14);
+        put("JGE", 15);
+        put("AMR", 4);
+        put("SMR", 5);
+        put("AIR", 6);
+        put("SIR", 7);
+        put("MLT", 16);
+        put("DVD", 17);
+        put("TRR", 18);
+        put("AND", 19);
+        put("ORR", 20);
+        put("NOT", 21);
+        put("SRC", 25);
+        put("RRC", 26);
+        put("IN", 49);
+        put("OUT", 50);
+        put("CHK", 51);
+        put("FADD", 27);
+        put("FSUB", 28);
+        put("VADD", 29);
+        put("VSUB", 30);
+        put("CNVRT", 31);
+        put("LDFR", 40);
+        put("STFR", 41);
     }};
 
     private HashMap<String, Integer> labelMap;
 
-    private int pc;
+    /*
+     * Address map
+     * [0, 8) - reserved
+     * 8 - use as zero memory
+     * 9 - stack pointer
+     * 10 - temporary value
+     * [0x700, 0x800) - stack memory
+     */
 
     public Assembler() {
         labelMap = new HashMap<>();
-        pc = CPU.PROGRAM_BASE;
+    }
+
+    private String readUntil(Scanner scan, char delim) {
+        return readUntil(scan, delim, true);
     }
 
     /**
      * Read a symbol until delimiter.
      */
-    private String readUntil(Scanner scan, char delim) {
+    private String readUntil(Scanner scan, char delim, boolean autostrip) {
         String r = "";
         while(scan.hasNext()) {
             char c = scan.next().charAt(0);
             if(c == delim) {
-                skipWhitespace(scan);
+                if(autostrip) {
+                    skipWhitespace(scan);
+                }
                 return rstrip(r);
             }
             r += c;
         }
-        return rstrip(r);
+        if(autostrip) {
+            r = rstrip(r);
+        }
+        return r;
     }
 
     /**
@@ -102,19 +122,20 @@ public class Assembler {
         List<String> result = new ArrayList<>();
         int lineno = 0;
 
+        /* Label first */
+        this.preprocessLabels(source);
+
         while(scan.hasNextLine()) {
             String line = lstrip(rstrip(scan.nextLine()));
             lineno++;
             if(line.endsWith(":")) {  // a label
-                String labelName = line.substring(0, line.length());
-                labelMap.put(labelName, pc);
+                continue;
             } else if(line.startsWith("!")) {
-                handlePseudoInstruction(lineno, line.substring(1));
+                handlePseudoInstruction(0, lineno, line.substring(1), result, false);
             } else if(line.equals("")) {
                 continue;
             } else {
                 result.add(assembleOne(lineno, line));
-                pc += 1;
             }
         }
 
@@ -123,22 +144,164 @@ public class Assembler {
     }
 
     /**
+     * Preprocess labels
+     */
+    private void preprocessLabels(String source) {
+        Scanner scan = new Scanner(source);
+        int pc = 0, lineno = 0;
+
+        while(scan.hasNextLine()) {
+            String line = lstrip(rstrip(scan.nextLine()));
+            lineno++;
+            if(line.endsWith(":")) {
+                String labelName = line.substring(0, line.length() - 1);
+                labelMap.put(labelName, pc);
+            } else if(line.startsWith("!")) {
+                pc = this.handlePseudoInstruction(pc, lineno, line, null, true);
+            } else if(line.equals("")) {
+                continue;
+            } else {
+                pc++;
+            }
+        }
+        scan.close();
+        return;
+    }
+
+    /**
+     * Load value to a general register
+     */
+    private void load(List<String> codes, int lineno, String reg, int value) {
+        /*
+           load 5 bits every time and shift
+           */
+        codes.add(assembleOne(lineno, String.format("LDR %s, X0, 8", reg)));
+        codes.add(assembleOne(lineno, String.format("AIR %s, %d", reg, (value >> 11) & 0x1f)));
+        codes.add(assembleOne(lineno, String.format("SRC %s, 5, L, L", reg)));
+        codes.add(assembleOne(lineno, String.format("AIR %s, %d", reg, (value >> 6) & 0x1f)));
+        codes.add(assembleOne(lineno, String.format("SRC %s, 5, L, L", reg)));
+        codes.add(assembleOne(lineno, String.format("AIR %s, %d", reg, (value >> 1) & 0x1f)));
+        codes.add(assembleOne(lineno, String.format("SRC %s, 1, L, L", reg)));
+        codes.add(assembleOne(lineno, String.format("AIR %s, %d", reg, value & 1)));
+        return;
+    }
+
+    /**
+     * Push a general register
+     */
+    private void push(List<String> codes, int lineno, String gr) {
+        codes.add(assembleOne(lineno, String.format("STR %s, X0, 9, I", gr)));
+        codes.add(assembleOne(lineno, String.format("LDR R0, X0, 9")));
+        codes.add(assembleOne(lineno, String.format("AIR R0, 1")));
+        codes.add(assembleOne(lineno, String.format("STR R0, X0, 9")));
+        return;
+    }
+
+    /**
+     * Pop a general register
+     */
+    private void pop(List<String> codes, int lineno, String gr) {
+        codes.add(assembleOne(lineno, String.format("LDR R0, X0, 9")));
+        codes.add(assembleOne(lineno, String.format("SIR R0, 1")));
+        codes.add(assembleOne(lineno, String.format("STR R0, X0, 9")));
+        codes.add(assembleOne(lineno, String.format("LDR %s, X0, 9, I", gr)));
+    }
+
+    /**
      * Handle pseudo-instruction.
      */
-    public void handlePseudoInstruction(int lineno, String line) {
+    public int handlePseudoInstruction(int pc, int lineno, String line, List<String> codes, boolean dryrun) throws AssemblerException {
         Scanner scan = new Scanner(line);
         scan.useDelimiter("");
 
         String command = readUntil(scan, ' ').toUpperCase();
+
+        String gr, label;
+        int number, address;
         switch(command) {
             case "ORG":   // set base address
                 int newpc = Integer.decode(readUntil(scan, ' '));
                 pc = newpc;
                 break;
-            default:
+            case "DEFINE":  // define a label
+                label = readUntil(scan, ',');
+                number = Integer.decode(readUntil(scan, ' '));
+                labelMap.put(label, number);
                 break;
+            case "WORD":    // define a word at current address
+                int word = Integer.decode(readUntil(scan, ' '));
+                if(!dryrun) {
+                    codes.add(Element.fromInt(word).toString());
+                }
+                pc = pc + 1;
+                break;
+            case "ASCII":   // define string
+            case "ASCIZ":
+                readUntil(scan, '"', false);
+                String content = readUntil(scan, '"', false);
+                if(!dryrun) {
+                    for(int i = 0; i < content.length(); i++) {
+                        codes.add(Element.fromInt((int)content.charAt(i)).toString());
+                    }
+
+                    if(command.equals("ASCIZ")) {
+                        codes.add(Element.fromInt(0).toString());
+                    }
+                }
+                pc = pc + content.length();
+                if(command.equals("ASCIZ")) {
+                    pc++;
+                }
+                break;
+            case "LDR":     // load a general register, since we normally can't load 16-bit numbers
+                String reg = readUntil(scan, ',');
+                int value = Integer.decode(readUntil(scan, ' '));
+                if(!dryrun) {
+                    this.load(codes, lineno, reg, value);
+                }
+                pc = pc + 8;
+                break;
+            case "PUSH":    // push a general register
+                gr = readUntil(scan, ' ');
+                if(!dryrun) {
+                    this.push(codes, lineno, gr);
+                }
+                pc = pc + 4;
+                break;
+            case "POP":     // pop a general register
+                gr = readUntil(scan, ' ');
+                if(!dryrun) {
+                    this.pop(codes, lineno, gr);
+                }
+                pc = pc + 4;
+                break;
+            case "CALL":    // call a subroutine
+                label = readUntil(scan, ' ');
+                address = translateLabel(lineno, label);
+                if(!dryrun) {
+                    this.load(codes, lineno, "R0", address);
+                    codes.add(assembleOne(lineno, "STR R0, X0, 10"));
+                    codes.add(assembleOne(lineno, "JSR X0, 10, I"));
+                }
+                pc = pc + 10;
+                break;
+            case "PROLOG":  // subroutine prolog
+                if(!dryrun) {
+                    this.push(codes, lineno, "R3");
+                }
+                pc = pc + 4;
+                break;
+            case "RET":     // Return from subroutine
+                if(!dryrun) {
+                    this.pop(codes, lineno, "R3");
+                    codes.add(assembleOne(lineno, "RFS 0"));
+                }
+                pc = pc + 5;
+                break;
+            default:
+                throw new AssemblerException(lineno, "Unrecognised pseudo-instruction");
         }
-        return;
+        return pc;
     }
 
     /**
@@ -165,15 +328,19 @@ public class Assembler {
         switch(name) {
             case "R0":
             case "X0":
+            case "0":
                 return 0;
             case "R1":
             case "X1":
+            case "1":
                 return 1;
             case "R2":
             case "X2":
+            case "2":
                 return 2;
             case "R3":
             case "X3":
+            case "3":
                 return 3;
             default:
                 throw new AssemblerException(lineno, "Unknown register");
