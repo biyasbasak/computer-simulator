@@ -199,15 +199,120 @@ public class ALU {
      * Perform multiplication
      */
     public Element multiply(Element multiplicand, Element multiplier, boolean cc) {
-        // TODO
-        return null;
+        int a = multiplicand.value();
+        int b = multiplier.value();
+        Element result = Element.fromInt(a * b, 32);
+
+        if(cc) {
+            boolean overflow = false;
+            for(int i = 0; i < 16; i++) {
+                if(result.get(i)) {
+                    overflow = true;
+                }
+            }
+            updateCC(overflow, false, false, result.value() == 0);
+        }
+        return result;
     }
 
     /**
      * Perform division
      */
     public Element divide(Element dividend, Element divisor, boolean cc) {
-        // TODO
-        return null;
+        int a = dividend.value();
+        int b = divisor.value();
+
+        Element quotient = Element.fromInt(a / b, 16);
+        Element remainder = Element.fromInt(a % b, 16);
+
+        Element result = Element.fromInt(0, 32);
+        for(int i = 0; i < 16; i++) {
+            result.set(i, quotient.get(i));
+            result.set(i + 16, remainder.get(i));
+        }
+
+        if(cc) {
+            updateCC(false, false, false, quotient.toString().equals(ZERO));
+        }
+        return result;
+    }
+
+    /**
+     * Logical shift
+     */
+    public Element lshift(Element elem, int count, boolean direct, boolean cc) {
+        Element result = Element.fromString(ZERO);
+
+        if(direct) {    // left shift
+            int end = 16 + count;
+            int start = end - 16;
+            for(int i = 0; i < 16; i++) {
+                result.set(i, elem.get(start + i));
+            }
+            if(cc) {
+                boolean overflow = false;
+                for(int i = 0; i < start; i++) {
+                    if(elem.get(i)) {
+                        overflow = true;
+                    }
+                }
+                updateCC(overflow, false, false, result.toString().equals(ZERO));
+            }
+        } else {    // right shift
+            int start = count;
+            for(int i = 0; i < 16; i++) {
+                if(i - start >= 0) {
+                    result.set(i, elem.get(i - start));
+                }
+            }
+
+            if(cc) {
+                boolean underflow = false;
+                for(int i = 16 - start; i < 16; i++) {
+                    if(elem.get(i)) {
+                        underflow = true;
+                    }
+                }
+                updateCC(false, underflow, false, result.toString().equals(ZERO));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Arithmetic shift 
+     */
+    public Element ashift(Element elem, int count, boolean direct, boolean cc) {
+        if(!direct && elem.get(0)) {
+            // right shift with msb set
+            Element result = lshift(elem, count, direct, cc);     // CC passover
+            for(int i = 0; i < count; i++) {
+                result.set(i);
+            }
+            return result;
+        }
+        return lshift(elem, count, direct, cc);
+    }
+
+    /**
+     * Rotate
+     */
+    public Element rotate(Element elem, int count, boolean direct, boolean cc) {
+        Element result = Element.fromString(ZERO);
+
+        if(direct) {    // left
+            for(int i = 0; i < 16; i++) {
+                result.set(i, elem.get((i + count) % 16));
+            }
+        } else {    // right
+            for(int i = 0; i < 16; i++) {
+                result.set(i, elem.get(Math.floorMod(i - count, 16)));
+            }
+        }
+
+        if(cc) {
+            updateCC(false, false, false, result.toString().equals(ZERO));
+        }
+        return result;
     }
 }

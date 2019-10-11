@@ -74,14 +74,25 @@ public class Exceptions {
     public static class MemoryException extends SimulatorException {
         private int _address;
 
+        private boolean _roaccess;
+
         public MemoryException(int address, String message) {
+            this(address, message, false);
+        }
+
+        public MemoryException(int address, String message, boolean ro) {
             super(message);
             _address = address;
+            _roaccess = ro;
         }
 
         @Override
         public String getMessage() {
             return String.format("[Memory] %s at address %x", super.getMessage(), _address);
+        }
+
+        public boolean isReservedAccess() {
+            return _roaccess;
         }
     }
 }

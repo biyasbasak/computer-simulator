@@ -83,6 +83,9 @@ public class CPU {
             case 0:
                 ins = new HLT();
                 break;
+            case 036:
+                ins = new TRAP();
+                break;
             case 1:
                 ins = new LDR();
                 break;
@@ -133,6 +136,30 @@ public class CPU {
                 break;
             case 7:
                 ins = new SIR();
+                break;
+            case 020:
+                ins = new MLT();
+                break;
+            case 021:
+                ins = new DVD();
+                break;
+            case 022:
+                ins = new TRR();
+                break;
+            case 023:
+                ins = new AND();
+                break;
+            case 024:
+                ins = new ORR();
+                break;
+            case 025:
+                ins = new NOT();
+                break;
+            case 031:
+                ins = new SRC();
+                break;
+            case 032:
+                ins = new RRC();
                 break;
             case 061:
                 ins = new IN();
@@ -199,15 +226,26 @@ public class CPU {
     }
 
     /**
-     * 
+     * Run until halted.
+     */
+    public void run() {
+        while(!this.halted()) {
+            this.step();
+        }
+    }
+
+    /**
+     * Single step on instruction cycle level.
      */
     public void step() {
         try {
             this.cycle();
-        } catch(MemoryException ex) {   // 3
-            // TODO
-        } catch(CPUException ex) {  // 0, 1, 2
-            // TODO
+        } catch(MemoryException ex) {
+            LOG.info("Memory fault: {}", ex.getMessage());
+            this.fault_handler(ex.isReservedAccess() ? 1 : 4);
+        } catch(CPUException ex) {
+            LOG.info("CPU fault: {}", ex.getMessage());
+            this.fault_handler(3);
         }
     }
 
@@ -240,6 +278,7 @@ public class CPU {
         if(handler.uvalue() >= memory.size()) {
             LOG.error("Double fault occured in fault handler, halting");
             this.halt();
+            return;
         }
         registers.setFault(fault_code);
         registers.setPC(handler.uvalue());
