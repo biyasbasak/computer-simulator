@@ -132,7 +132,7 @@ public class Assembler {
                 continue;
             } else if(line.startsWith("!")) {
                 handlePseudoInstruction(0, lineno, line.substring(1), result, false);
-            } else if(line.equals("")) {
+            } else if(line.equals("") || line.startsWith("#")) {
                 continue;
             } else {
                 result.add(assembleOne(lineno, line));
@@ -157,8 +157,8 @@ public class Assembler {
                 String labelName = line.substring(0, line.length() - 1);
                 labelMap.put(labelName, pc);
             } else if(line.startsWith("!")) {
-                pc = this.handlePseudoInstruction(pc, lineno, line, null, true);
-            } else if(line.equals("")) {
+                pc = this.handlePseudoInstruction(pc, lineno, line.substring(1), null, true);
+            } else if(line.equals("") || line.startsWith("#")) {
                 continue;
             } else {
                 pc++;
@@ -175,7 +175,9 @@ public class Assembler {
         /*
            load 5 bits every time and shift
            */
-        codes.add(assembleOne(lineno, String.format("LDR %s, X0, 8", reg)));
+        //codes.add(assembleOne(lineno, String.format("LDR %s, X0, 8", reg)));
+        codes.add(assembleOne(lineno, String.format("SRC %s, 15, L, L", reg)));
+        codes.add(assembleOne(lineno, String.format("SRC %s, 1, L, L", reg)));   // clear reg using shifting
         codes.add(assembleOne(lineno, String.format("AIR %s, %d", reg, (value >> 11) & 0x1f)));
         codes.add(assembleOne(lineno, String.format("SRC %s, 5, L, L", reg)));
         codes.add(assembleOne(lineno, String.format("AIR %s, %d", reg, (value >> 6) & 0x1f)));
@@ -259,7 +261,7 @@ public class Assembler {
                 if(!dryrun) {
                     this.load(codes, lineno, reg, value);
                 }
-                pc = pc + 8;
+                pc = pc + 9;
                 break;
             case "PUSH":    // push a general register
                 gr = readUntil(scan, ' ');
@@ -283,7 +285,7 @@ public class Assembler {
                     codes.add(assembleOne(lineno, "STR R0, X0, 10"));
                     codes.add(assembleOne(lineno, "JSR X0, 10, I"));
                 }
-                pc = pc + 10;
+                pc = pc + 11;
                 break;
             case "PROLOG":  // subroutine prolog
                 if(!dryrun) {
@@ -297,6 +299,12 @@ public class Assembler {
                     codes.add(assembleOne(lineno, "RFS 0"));
                 }
                 pc = pc + 5;
+                break;
+            case "PRINT":
+                label = readUntil(scan, ' ');
+                if(!dryrun) {
+                    LOG.info("Assembler label '{}' = {}", label, this.translateLabel(lineno, label));
+                }
                 break;
             default:
                 throw new AssemblerException(lineno, "Unrecognised pseudo-instruction");
@@ -432,7 +440,7 @@ public class Assembler {
                 xr = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
                 address = translateLabel(lineno, readUntil(scan, ','));
                 indirect = readUntil(scan, ',').toUpperCase();
-                result += packFormat1(gr, xr, indirect == "I", address);
+                result += packFormat1(gr, xr, indirect.equals("I"), address);
                 break;
             case "LDX":
             case "STX":
@@ -441,7 +449,7 @@ public class Assembler {
                 xr = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
                 address = translateLabel(lineno, readUntil(scan, ','));
                 indirect = readUntil(scan, ',').toUpperCase();
-                result += packFormat1(0, xr, indirect == "I", address);
+                result += packFormat1(0, xr, indirect.equals("I"), address);
                 break;
             case "RFS":
                 address = translateLabel(lineno, readUntil(scan, ','));
@@ -457,7 +465,7 @@ public class Assembler {
             case "DVD":
             case "TRR":
             case "AND":
-            case "OR":
+            case "ORR":
                 rx = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
                 ry = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
                 result += packFormat2(rx, ry);
@@ -472,7 +480,7 @@ public class Assembler {
                 count = translateLabel(lineno, readUntil(scan, ','));
                 lr = readUntil(scan, ',').toUpperCase();
                 arith = readUntil(scan, ',').toUpperCase();
-                result += packFormat3(r, arith == "A", lr == "L", count);
+                result += packFormat3(r, arith.equals("A"), lr.equals("L"), count);
                 break;
             case "IN":
             case "OUT":
@@ -485,7 +493,9 @@ public class Assembler {
                 throw new AssemblerException(lineno, "Unknown mnenomic");
         }
 
-        assert result.length() == 16;
+        if(result.length() != 16) {
+            throw new AssemblerException(lineno, "Internal error");
+        }
         scan.close();
         return result;
     }

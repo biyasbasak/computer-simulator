@@ -27,9 +27,10 @@ public class Printer extends Device {
 
     @Override
     public void output(Element elem) {
-        LOG.info("Writing to printer: {}", elem.uvalue());
+        int value = elem.uvalue();  // prevent from using reference
+        LOG.info("Writing to printer: {}", value);
         Platform.runLater(() -> {
-            ctrler.appendToConsole(elem.uvalue());
+            ctrler.appendToConsole(value);
         });
         return;
     }

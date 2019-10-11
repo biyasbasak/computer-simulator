@@ -120,7 +120,7 @@
                         <Insets left="70.0" top="10.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="51.0" text="Run">
+                  <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="51.0" text="Run" onAction="#runSim">
                      <VBox.margin>
                         <Insets left="70.0" top="15.0" />
                      </VBox.margin>

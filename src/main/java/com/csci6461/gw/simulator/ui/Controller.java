@@ -241,6 +241,30 @@ public class Controller implements Initializable {
             LOG.error("Threading error: " + ex.getMessage());
         }
     }
+
+    @FXML
+    private void runSim() {
+        class CPURunTask implements Runnable {
+            Controller ctrl;
+            public CPURunTask(Controller c) { ctrl = c; }
+            public void run() {
+                ctrl.getCPU().run();
+                Platform.runLater(() -> {
+                    ctrl.update();
+                });
+            }
+        }
+
+        try {
+            Thread t = new Thread(new CPURunTask(this));
+            t.start();
+        } catch(RuntimeException ex) {
+            LOG.error("Run error: " + ex.getMessage());
+        } catch(Exception ex) {
+            LOG.error("Threading error: " + ex.getMessage());
+        }
+    }
+
     // config the IPL button
     @FXML
     private Button ipl;
