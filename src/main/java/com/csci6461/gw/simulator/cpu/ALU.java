@@ -10,9 +10,9 @@ import com.csci6461.gw.simulator.util.Element;
  */
 public class ALU {
     private static Logger LOG = LogManager.getLogger("CPU.ALU");
-    private static final String ZERO = "0000000000000000";
-    private static final String MINUS_ONE = "1111111111111111";
-    private static final String ONE = "0000000000000001";
+    public static final String ZERO = "0000000000000000";
+    public static final String MINUS_ONE = "1111111111111111";
+    public static final String ONE = "0000000000000001";
 
     private CPU cpu;
 
