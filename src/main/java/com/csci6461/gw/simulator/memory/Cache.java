@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager; 
 
 import com.csci6461.gw.simulator.util.Element; 
+import static com.csci6461.gw.simulator.util.Exceptions.*;
 
 /**
  * Implementation of a simple direct-mapped cache

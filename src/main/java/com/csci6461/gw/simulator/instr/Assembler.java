@@ -194,7 +194,7 @@ public class Assembler {
     private void push(List<String> codes, int lineno, String gr) {
         codes.add(assembleOne(lineno, String.format("STR %s, X0, 9, I", gr)));
         codes.add(assembleOne(lineno, String.format("LDR R0, X0, 9")));
-        codes.add(assembleOne(lineno, String.format("AIR R0, 1")));
+        codes.add(assembleOne(lineno, String.format("SIR R0, 1")));
         codes.add(assembleOne(lineno, String.format("STR R0, X0, 9")));
         return;
     }
@@ -204,9 +204,43 @@ public class Assembler {
      */
     private void pop(List<String> codes, int lineno, String gr) {
         codes.add(assembleOne(lineno, String.format("LDR R0, X0, 9")));
-        codes.add(assembleOne(lineno, String.format("SIR R0, 1")));
+        codes.add(assembleOne(lineno, String.format("AIR R0, 1")));
         codes.add(assembleOne(lineno, String.format("STR R0, X0, 9")));
         codes.add(assembleOne(lineno, String.format("LDR %s, X0, 9, I", gr)));
+    }
+
+    /**
+     * Move between registers
+     */
+    private void move(List<String> codes, int lineno, String gr0, String gr1) {
+        codes.add(assembleOne(lineno, String.format("AND %s, %s", gr0, gr1)));
+        codes.add(assembleOne(lineno, String.format("ORR %s, %s", gr0, gr1)));
+    }
+
+    /**
+     * Jump to address 
+     */
+    private void jmp(List<String> codes, int lineno, int address) {
+        this.load(codes, lineno, "R0", address);
+        codes.add(assembleOne(lineno, "STR R0, X0, 31"));
+        codes.add(assembleOne(lineno, "JMA X0, 31, I"));
+    }
+
+    /**
+     * Negation
+     */
+    private void neg(List<String> codes, int lineno, String gr) {
+        codes.add(assembleOne(lineno, String.format("NOT %s", gr)));
+        codes.add(assembleOne(lineno, String.format("AIR %s, 1", gr)));
+    }
+
+    /**
+     * Load index register
+     */
+    private void loadx(List<String> codes, int lineno, String xr, int value) {
+        this.load(codes, lineno, "R0", value);
+        codes.add(assembleOne(lineno, "STR R0, X0, 31"));
+        codes.add(assembleOne(lineno, String.format("LDX %s, 31", xr)));
     }
 
     /**
@@ -218,7 +252,7 @@ public class Assembler {
 
         String command = readUntil(scan, ' ').toUpperCase();
 
-        String gr, label;
+        String gr, label, gr0, gr1;
         int number, address;
         switch(command) {
             case "ORG":   // set base address
@@ -256,34 +290,50 @@ public class Assembler {
                 }
                 break;
             case "LDR":     // load a general register, since we normally can't load 16-bit numbers
-                String reg = readUntil(scan, ',');
-                int value = Integer.decode(readUntil(scan, ' '));
                 if(!dryrun) {
+                    String reg = readUntil(scan, ',');
+                    int value = translateLabel(lineno, readUntil(scan, ' '));
                     this.load(codes, lineno, reg, value);
                 }
                 pc = pc + 9;
                 break;
-            case "PUSH":    // push a general register
-                gr = readUntil(scan, ' ');
+            case "LDX":
                 if(!dryrun) {
+                    String xr = readUntil(scan, ',');
+                    int value = translateLabel(lineno, readUntil(scan, ' '));
+                    this.loadx(codes, lineno, xr, value);
+                }
+                pc = pc + 11;
+                break;
+            case "PUSH":    // push a general register
+                if(!dryrun) {
+                    gr = readUntil(scan, ' ');
                     this.push(codes, lineno, gr);
                 }
                 pc = pc + 4;
                 break;
             case "POP":     // pop a general register
-                gr = readUntil(scan, ' ');
                 if(!dryrun) {
+                    gr = readUntil(scan, ' ');
                     this.pop(codes, lineno, gr);
                 }
                 pc = pc + 4;
                 break;
             case "CALL":    // call a subroutine
-                label = readUntil(scan, ' ');
-                address = translateLabel(lineno, label);
                 if(!dryrun) {
+                    label = readUntil(scan, ' ');
+                    address = translateLabel(lineno, label);
                     this.load(codes, lineno, "R0", address);
                     codes.add(assembleOne(lineno, "STR R0, X0, 10"));
                     codes.add(assembleOne(lineno, "JSR X0, 10, I"));
+                }
+                pc = pc + 11;
+                break;
+            case "JMP":     // jmp to a label
+                if(!dryrun) {
+                    label = readUntil(scan, ' ');
+                    address = translateLabel(lineno, label);
+                    this.jmp(codes, lineno, address);
                 }
                 pc = pc + 11;
                 break;
@@ -293,6 +343,14 @@ public class Assembler {
                 }
                 pc = pc + 4;
                 break;
+            case "MOV":
+                if(!dryrun) {
+                    gr0 = readUntil(scan, ',');
+                    gr1 = readUntil(scan, ' ');
+                    this.move(codes, lineno, gr0, gr1);
+                }
+                pc = pc + 2;
+                break;
             case "RET":     // Return from subroutine
                 if(!dryrun) {
                     this.pop(codes, lineno, "R3");
@@ -300,9 +358,16 @@ public class Assembler {
                 }
                 pc = pc + 5;
                 break;
-            case "PRINT":
-                label = readUntil(scan, ' ');
+            case "NEG":
                 if(!dryrun) {
+                    gr = readUntil(scan, ' ');
+                    this.neg(codes, lineno, gr);
+                }
+                pc = pc + 2;
+                break;
+            case "PRINT":
+                if(!dryrun) {
+                    label = readUntil(scan, ' ');
                     LOG.info("Assembler label '{}' = {}", label, this.translateLabel(lineno, label));
                 }
                 break;

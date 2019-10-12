@@ -34,6 +34,10 @@ public class Keyboard extends Device {
     @Override
     public Element input() {
         while(buffer.size() == 0) {
+            Platform.runLater(() -> {
+                ctrler.update();
+            });
+
             try {
                 ctrler.getLock().lock();
                 ctrler.getInputCond().await();

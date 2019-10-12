@@ -201,6 +201,7 @@ public class ALU {
     public Element multiply(Element multiplicand, Element multiplier, boolean cc) {
         int a = multiplicand.value();
         int b = multiplier.value();
+
         Element result = Element.fromInt(a * b, 32);
 
         if(cc) {

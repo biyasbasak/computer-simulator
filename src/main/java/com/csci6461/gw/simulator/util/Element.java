@@ -22,17 +22,10 @@ public class Element extends BitSet {
     }
 
     /**
-     * Wrap the number around within the bound of {@link Element#_nbits}.
-     */
-    private int wraparound(int value) {
-        return value & ((1 << _nbits) - 1);
-    }
-
-    /**
      * Element addition: self = self + addend.
      */
     public void add(int addend) {
-        int value = wraparound(this.value() + addend);
+        int value = (this.value() + addend);
         this.set(BitOperations.intToBits(value, _nbits, true));
     }
 
@@ -40,7 +33,7 @@ public class Element extends BitSet {
      * Element subtraction: self = self - subtraction.
      */
     public void sub(int subtraction) {
-        int value = wraparound(this.value() - subtraction);
+        int value = (this.value() - subtraction);
         this.set(BitOperations.intToBits(value, _nbits, true));
     }
 
@@ -48,7 +41,7 @@ public class Element extends BitSet {
      * Element multiplication: self = self * multiplier.
      */
     public void mult(int multiplier) {
-        int value = wraparound(this.value() * multiplier);
+        int value = (this.value() * multiplier);
         this.set(BitOperations.intToBits(value, _nbits, true));
     }
 
@@ -56,7 +49,7 @@ public class Element extends BitSet {
      * Element division: self = self / divisor.
      */
     public void div(int divisor) {
-        int value = wraparound(this.value() / divisor);
+        int value = (this.value() / divisor);
         this.set(BitOperations.intToBits(value, _nbits, true));
     }
 
@@ -64,7 +57,7 @@ public class Element extends BitSet {
      * Element modulo: self = self % divisor.
      */
     public void mod(int divisor) {
-        int value = wraparound(this.value() / divisor);
+        int value = (this.value() / divisor);
         this.set(BitOperations.intToBits(value, _nbits, true));
     }
 
@@ -109,7 +102,7 @@ public class Element extends BitSet {
      * Set a element by its integer representation.
      */
     public void setByValue(int value) {
-        this.set(BitOperations.intToBits(wraparound(value), _nbits, true));
+        this.set(BitOperations.intToBits(value, _nbits, true));
     }
 
     /**

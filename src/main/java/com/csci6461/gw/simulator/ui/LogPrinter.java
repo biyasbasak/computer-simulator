@@ -1,5 +1,7 @@
 package com.csci6461.gw.simulator.ui;
 
+import com.csci6461.gw.simulator.ui.Controller; 
+
 import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
@@ -28,6 +30,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class LogPrinter extends AbstractAppender {
     private static TextFlow textFlow;
     private static ScrollPane scrollPane;
+    private static Controller ctrler;
 
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
     private final Lock readLock = rwLock.readLock();
@@ -53,6 +56,7 @@ public class LogPrinter extends AbstractAppender {
 
         final String message = new String(getLayout().toByteArray(event));
         try {
+            /*
             Platform.runLater(() -> {
                 try {
                     if(textFlow != null) {
@@ -63,6 +67,11 @@ public class LogPrinter extends AbstractAppender {
                     System.out.printf("Error while appending: %s\n", t.getMessage());
                 }
             });
+            */
+
+            if(ctrler != null) {
+                ctrler.appendToLog(message);
+            }
         } catch (final IllegalStateException ex) {
             ex.printStackTrace();
         } finally {
@@ -79,6 +88,10 @@ public class LogPrinter extends AbstractAppender {
     }
     public static void setScrollPane(ScrollPane scp){
         LogPrinter.scrollPane = scp;
+    }
+
+    public static void setController(Controller ctrl) {
+        LogPrinter.ctrler = ctrl;
     }
 
     public static void clear(){

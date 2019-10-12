@@ -111,7 +111,7 @@ public class Transfer {
             }
             GR.set(result);
             
-            LOG.info("SOB: PC <- {}", registers.pc());
+            LOG.info("SOB: PC <- {}, GR = {}", registers.pc(), GR.uvalue());
         }
     }
     public static class JGE extends Instruction {

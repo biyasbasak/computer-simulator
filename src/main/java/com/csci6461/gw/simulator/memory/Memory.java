@@ -50,7 +50,7 @@ public class Memory {
      * Store memory 
      */
     public void store(int index, Element elem) {
-        if(index > this.memorySize) {
+        if(index >= this.memorySize) {
             throw new MemoryException(index, "Out-of-bounds write");
         }
         cache.store(index, elem);
@@ -61,7 +61,7 @@ public class Memory {
      * Fetch memory
      */
     public Element fetch(int index) {
-        if(index > this.memorySize) {
+        if(index >= this.memorySize) {
             throw new MemoryException(index, "Out-of-bounds read");
         }
         return cache.fetch(index);
@@ -71,6 +71,9 @@ public class Memory {
      * Bypassing the cache, read directly from the memory 
      */
     public Element fetch_direct(int address) {
+        if(address >= this.memorySize) {
+            throw new MemoryException(address, "Out-of-bounds read");
+        }
         return this.memory[address];
     }
 
@@ -78,6 +81,9 @@ public class Memory {
      * Bypassing the cache, write directly to the memory 
      */
     public void store_direct(int address, Element element) {
+        if(address >= this.memorySize) {
+            throw new MemoryException(address, "Out-of-bounds write");
+        }
         this.memory[address] = element;
     }
 
@@ -108,7 +114,7 @@ public class Memory {
                 effectiveAddress = Integer.parseInt(address, 2);
             } else {
                 Register register = registers.getIndexRegister(Integer.parseInt(indexReg, 2));
-                int registerValue = register.value();
+                int registerValue = register.uvalue();
                 effectiveAddress = registerValue + Integer.parseInt(address, 2);
             }
         } else {
@@ -117,7 +123,7 @@ public class Memory {
                 effectiveAddress =  Integer.parseInt(memoryChunk.toString(), 2);
             } else {
                 Register register = registers.getIndexRegister(Integer.parseInt(indexReg, 2));
-                int registerValue = register.value();
+                int registerValue = register.uvalue();
                 int registerAndAddressValue = registerValue + Integer.parseInt(address, 2);
                 Element memoryChunk = fetch(registerAndAddressValue);
                 effectiveAddress = Integer.parseInt(memoryChunk.toString(), 2);

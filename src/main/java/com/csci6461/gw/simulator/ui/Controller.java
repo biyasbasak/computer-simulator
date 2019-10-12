@@ -20,6 +20,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.TextFlow;
+import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -105,6 +106,10 @@ public class Controller implements Initializable {
 
     private Deque<Integer> bufferQ = new ArrayDeque<Integer>();
 
+    private Deque<Integer> obufferQ = new ArrayDeque<Integer>();
+
+    private Deque<String> logQ = new ArrayDeque<String>();
+
     private ReentrantLock lock = new ReentrantLock();
 
     private Condition input_cond = lock.newCondition();
@@ -169,14 +174,14 @@ public class Controller implements Initializable {
     }
 
     public void update() {
-        registerTableView.getItems().clear();
-        memoryTableView.getItems().clear();
+        //registerTableView.getItems().clear();
+        //memoryTableView.getItems().clear();
 
         // update memory
         for (int i = 0; i < 2048; i++) {
             Element memoryChunk = memory.fetch_direct(i);
             String j = String.valueOf(i);
-            memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(), Integer.toString(memoryChunk.value())));
+            memoryTableObservableList.set(i, new MemoryTable(j, memoryChunk.toString(), Integer.toString(memoryChunk.value())));
         }
 
         HashMap<String, Register> allRegisters =  register.getAllRegisters();
@@ -186,9 +191,32 @@ public class Controller implements Initializable {
             Register register = allRegisters.get(name);
             String registerBinary = register.toString();
             String registerDecimal = Integer.toString(register.value());
-            registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary, registerDecimal));
+            registerTableObservableList.set(index, new RegisterTable(indexStr, name, registerBinary, registerDecimal));
             index += 1;
         }
+        
+        // flush output buffer
+        String t = console.getText();
+        while(obufferQ.size() != 0) {
+            t += (char)obufferQ.removeFirst().intValue();
+        }
+        console.setText(t);
+
+        // flush log buffer
+        System.out.println(logQ.size());
+        while(logQ.size() >= 200) {     // remove redundant logs
+            logQ.removeFirst();
+        }
+        while(logQ.size() != 0) {
+            Text message = new Text(logQ.removeFirst());
+            if(logFlow.getChildren().size() == 200) {
+                logFlow.getChildren().remove(0);
+            }
+            logFlow.getChildren().add(message);
+        }
+        logQ.clear();
+
+        System.out.println(logFlow.getChildren().size());
     }
 
     /**
@@ -212,7 +240,6 @@ public class Controller implements Initializable {
             ex.printStackTrace();
         }
         LOG.info("Program1 loaded.");
-
         update();
     }
     // config the Step button
@@ -275,6 +302,7 @@ public class Controller implements Initializable {
         initializeRegister();
         LogPrinter.setTextFlow(logFlow);
         LogPrinter.setScrollPane(scrollPane);
+        LogPrinter.setController(this);
         LOG.info("Machine initialized on IPL");
     }
 
@@ -400,9 +428,12 @@ public class Controller implements Initializable {
     }
 
     public void appendToConsole(Integer ch) {
-        char a = (char)(ch.intValue());
-        String s = console.getText() + a;
-        console.setText(s);
+        obufferQ.addLast(ch);
+        return;
+    }
+
+    public void appendToLog(String msg) {
+        logQ.addLast(msg);
         return;
     }
     
