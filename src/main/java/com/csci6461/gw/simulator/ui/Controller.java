@@ -58,15 +58,15 @@ public class Controller implements Initializable {
     // config the binary column of Memory table
     @FXML
     private TableColumn<MemoryTable, String> memoryBinary;
-
+    // config the decimal table of Memory table
     @FXML
     private TableColumn<MemoryTable, String> memoryDecimal;
 
     // creat a "observablelist" object to present memory data
-    private ObservableList<MemoryTable> memoryTableObservableList = FXCollections.observableArrayList(
-            );
+    private ObservableList<MemoryTable> memoryTableObservableList = FXCollections.observableArrayList();
     // get a memory object, for initialization and further usage
     private Memory memory = cpu.getMemory();
+
     /**
      * This is the cache tableview configuration
      */
@@ -137,15 +137,6 @@ public class Controller implements Initializable {
      */
     @FXML
     private TextArea console;
-    
-    @FXML
-    private Button test;
-
-    @FXML
-    private void testareainput() {
-        String text = console.getText();
-        System.out.println(text.toString());
-    }
 
     public CPU getCPU() {
         return cpu;
@@ -330,6 +321,7 @@ public class Controller implements Initializable {
     // Initialize the simulator on starting
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // initialize memory
         memoryId.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryId"));
         memoryBinary.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryBinary"));
         memoryDecimal.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryDecimal"));
@@ -343,7 +335,6 @@ public class Controller implements Initializable {
             LOG.info("Setting memory @ {} to {}.", address, Integer.parseInt(newValue, 2));
             update();
         });
-        memoryTableView.setItems(memoryTableObservableList);
 
         memoryDecimal.setCellFactory(TextFieldTableCell.forTableColumn());
         memoryDecimal.setOnEditCommit((TableColumn.CellEditEvent<MemoryTable, String> t) -> {
@@ -354,7 +345,16 @@ public class Controller implements Initializable {
             LOG.info("Setting memory @ {} to {}.", address, newValue);
             update();
         });
+        memoryTableView.setItems(memoryTableObservableList);
 
+        //initialize cache
+        cacheIndex.setCellValueFactory(new PropertyValueFactory<CacheTable, String >("cacheIndex"));
+        cacheOffset.setCellValueFactory(new PropertyValueFactory<CacheTable, String >("cacheOffset"));
+        cacheTag.setCellValueFactory(new PropertyValueFactory<CacheTable, String >("cacheTag"));
+        cacheBinary.setCellValueFactory(new PropertyValueFactory<CacheTable, String >("cacheBinary"));
+        cacheTableView.setItems(cacheTableObservableList);
+
+        // initialize register
         registerId.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerId"));
         registerName.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerName"));
         registerBinary.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerBinary"));
@@ -380,11 +380,7 @@ public class Controller implements Initializable {
         });
         registerTableView.setItems(registerTableObservableList);
 
-        cacheIndex.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Index"));
-        cacheTag.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Tag"));
-        cacheOffset.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Offset"));
-        cacheBinary.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("binary"));
-        cacheTableView.setItems(cacheTableObservableList);
+
 
         /* Simulate terminal behaviour */
         console.addEventFilter(KeyEvent.ANY, new EventHandler<KeyEvent>() {

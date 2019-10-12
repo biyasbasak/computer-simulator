@@ -4,30 +4,28 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class CacheTable {
     private final SimpleStringProperty cacheIndex;
-    private final SimpleStringProperty cacheTag;
     private final SimpleStringProperty cacheOffset;
+    private final SimpleStringProperty cacheTag;
     private final SimpleStringProperty cacheBinary;
 
-    public CacheTable(String cacheIndex, String cacheTag, String cacheOffset, String cacheBinary){
+    public CacheTable(String cacheIndex, String cacheOffset, String cacheTag, String cacheBinary){
+        super();
         this.cacheIndex = new SimpleStringProperty(cacheIndex);
-        this.cacheTag = new SimpleStringProperty(cacheTag);
         this.cacheOffset = new SimpleStringProperty(cacheOffset);
+        this.cacheTag = new SimpleStringProperty(cacheTag);
         this.cacheBinary = new SimpleStringProperty(cacheBinary);
     }
 
-    public String getcacheIndex(){
+    public String getCacheIndex(){
         return cacheIndex.get();
     }
-
-    public String getcacheTag(){
-        return cacheTag.get();
-    }
-
-    public String getcacheOffset(){
+    public String getCacheOffset(){
         return cacheOffset.get();
     }
-
-    public String getcacheBinary(){
+    public String getCacheTag(){
+        return cacheTag.get();
+    }
+    public String getCacheBinary(){
         return cacheBinary.get();
     }
 }

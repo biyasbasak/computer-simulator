@@ -72,12 +72,12 @@
                 </Tab>
                 <Tab text="                                    Cache                                   ">
                      <content>
-                        <TableView prefHeight="200.0" prefWidth="200.0" fx:id="cacheTableView">
+                        <TableView fx:id="cacheTableView" prefHeight="200.0" prefWidth="200.0">
                           <columns>
-                            <TableColumn prefWidth="67.0" text="Index" fx:id="cacheIndex"/>
-                            <TableColumn text="Offset" fx:id="cacheOffset"/>
-                              <TableColumn prefWidth="169.0" text="Tag" fx:id="cacheTag"/>
-                              <TableColumn prefWidth="284.0" text="binary" fx:id="cacheBinary"/>
+                             <TableColumn fx:id="cacheIndex" prefWidth="67.0" text="Index" />
+                             <TableColumn fx:id="cacheOffset" prefWidth="88.0" text="Offset" />
+                             <TableColumn fx:id="cacheTag" prefWidth="169.0" text="Tag" />
+                             <TableColumn fx:id="cacheBinary" prefWidth="284.0" text="binary" />
                           </columns>
                         </TableView>
                      </content>
