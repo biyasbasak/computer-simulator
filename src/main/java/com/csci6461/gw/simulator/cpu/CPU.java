@@ -72,6 +72,13 @@ public class CPU {
     public ALU getALU() {
         return this.alu;
     }
+
+    /**
+     * Initialize
+     */
+    public void initialize() {
+        this.halted = false;
+    }
     
     /**
      * Execute the given instruction.

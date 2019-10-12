@@ -38,10 +38,18 @@ public class MachineRegisters {
      */
     private HashMap<String, Register> _Regs;
 
+
     /**
      * Class constructor
      */
     public MachineRegisters() {
+        initialize();
+    }
+
+    /**
+     * Initialize all registers 
+     */
+    public void initialize() {
         _Regs = new HashMap<>();
         
         // general registers

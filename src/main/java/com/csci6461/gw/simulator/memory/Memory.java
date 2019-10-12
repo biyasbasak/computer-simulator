@@ -22,6 +22,7 @@ public class Memory {
         this.wordSize = MAX_WORD_SIZE;
         this.memory = new Element[MAX_MEMORY_SIZE];
         this.cache = new Cache(this);
+        initialize();
     }
 
     public void initialize() {

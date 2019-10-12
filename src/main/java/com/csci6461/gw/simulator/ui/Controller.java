@@ -299,11 +299,9 @@ public class Controller implements Initializable {
     // action on clicking the IPL button
     @FXML
     public void IPL(){
-        initializeMemory();
-        initializeRegister();
-        LogPrinter.setTextFlow(logFlow);
-        LogPrinter.setScrollPane(scrollPane);
-        LogPrinter.setController(this);
+        memory.initialize();
+        register.initialize();
+        cpu.initialize();
         LOG.info("Machine initialized on IPL");
     }
 
@@ -313,10 +311,55 @@ public class Controller implements Initializable {
     // Initialize the simulator on starting
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initializeMemory();
-        initializeRegister();
-        LogPrinter.setTextFlow(logFlow);
-        LogPrinter.setScrollPane(scrollPane);
+        memoryId.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryId"));
+        memoryBinary.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryBinary"));
+        memoryDecimal.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryDecimal"));
+
+        memoryBinary.setCellFactory(TextFieldTableCell.forTableColumn());
+        memoryBinary.setOnEditCommit((TableColumn.CellEditEvent<MemoryTable, String> t) -> {
+            MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            String newValue = t.getNewValue();
+            int address = Integer.parseInt(registerChange.getMemoryId());
+            memory.set_direct(address, newValue);
+            LOG.info("Setting memory @ {} to {}.", address, Integer.parseInt(newValue, 2));
+            update();
+        });
+        memoryTableView.setItems(memoryTableObservableList);
+
+        memoryDecimal.setCellFactory(TextFieldTableCell.forTableColumn());
+        memoryDecimal.setOnEditCommit((TableColumn.CellEditEvent<MemoryTable, String> t) -> {
+            MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int newValue = Integer.parseInt(t.getNewValue());
+            int address = Integer.parseInt(registerChange.getMemoryId());
+            memory.set_direct(address, intToString(newValue, 16));
+            LOG.info("Setting memory @ {} to {}.", address, newValue);
+            update();
+        });
+
+        registerId.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerId"));
+        registerName.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerName"));
+        registerBinary.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerBinary"));
+        registerBinary.setCellFactory(TextFieldTableCell.forTableColumn());
+        registerBinary.setOnEditCommit((TableColumn.CellEditEvent<RegisterTable, String> t) -> {
+            RegisterTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int newValue = Integer.parseInt(t.getNewValue(), 2);
+            String registerName = registerChange.getRegisterName();
+            register.getAllRegisters().get(registerName).setByValue(newValue);
+            LOG.info("Setting register {} to {}.", registerName, newValue);
+            update();
+        });
+
+        registerDecimal.setCellValueFactory(new PropertyValueFactory<RegisterTable, String>("registerDecimal"));
+        registerDecimal.setCellFactory(TextFieldTableCell.forTableColumn());
+        registerDecimal.setOnEditCommit((TableColumn.CellEditEvent<RegisterTable, String> t) -> {
+            RegisterTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int newValue = Integer.parseInt(t.getNewValue());
+            String registerName = registerChange.getRegisterName();
+            register.getAllRegisters().get(registerName).setByValue(newValue);
+            LOG.info("Setting register {} to {}.", registerName, newValue);
+            update();
+        });
+        registerTableView.setItems(registerTableObservableList);
 
         /* Simulate terminal behaviour */
         console.addEventFilter(KeyEvent.ANY, new EventHandler<KeyEvent>() {
@@ -381,82 +424,11 @@ public class Controller implements Initializable {
             }
         });
 
+        LogPrinter.setTextFlow(logFlow);
+        LogPrinter.setScrollPane(scrollPane);
+        LogPrinter.setController(this);
         LOG.info("initialize successful");
-    }
-
-
-    // Memory Initialization
-    private void initializeMemory(){
-        memoryId.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryId"));
-        memoryBinary.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryBinary"));
-        memoryDecimal.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryDecimal"));
-
-        memoryBinary.setCellFactory(TextFieldTableCell.forTableColumn());
-        memoryBinary.setOnEditCommit((TableColumn.CellEditEvent<MemoryTable, String> t) -> {
-            MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
-            String newValue = t.getNewValue();
-            int address = Integer.parseInt(registerChange.getMemoryId());
-            memory.set_direct(address, newValue);
-            LOG.info("Setting memory @ {} to {}.", address, Integer.parseInt(newValue, 2));
-            update();
-        });
-
-        memoryDecimal.setCellFactory(TextFieldTableCell.forTableColumn());
-        memoryDecimal.setOnEditCommit((TableColumn.CellEditEvent<MemoryTable, String> t) -> {
-            MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
-            int newValue = Integer.parseInt(t.getNewValue());
-            int address = Integer.parseInt(registerChange.getMemoryId());
-            memory.set_direct(address, intToString(newValue, 16));
-            LOG.info("Setting memory @ {} to {}.", address, newValue);
-            update();
-        });
-
-        memory.initialize();
-        for (int i = 0; i < memory.size(); i++) {
-            Element memoryChunk = memory.fetch_direct(i);
-            String j = String.valueOf(i);
-            memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(),Integer.toString(memoryChunk.value())));
-        }
-        memoryTableView.setItems(memoryTableObservableList);
-    }
-
-    // Register Initialization
-    private void initializeRegister(){
-        registerId.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerId"));
-        registerName.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerName"));
-        registerBinary.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerBinary"));
-        registerBinary.setCellFactory(TextFieldTableCell.forTableColumn());
-        registerBinary.setOnEditCommit((TableColumn.CellEditEvent<RegisterTable, String> t) -> {
-            RegisterTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
-            int newValue = Integer.parseInt(t.getNewValue(), 2);
-            String registerName = registerChange.getRegisterName();
-            register.getAllRegisters().get(registerName).setByValue(newValue);
-            LOG.info("Setting register {} to {}.", registerName, newValue);
-            update();
-        });
-
-        registerDecimal.setCellValueFactory(new PropertyValueFactory<RegisterTable, String>("registerDecimal"));
-        registerDecimal.setCellFactory(TextFieldTableCell.forTableColumn());
-        registerDecimal.setOnEditCommit((TableColumn.CellEditEvent<RegisterTable, String> t) -> {
-            RegisterTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
-            int newValue = Integer.parseInt(t.getNewValue());
-            String registerName = registerChange.getRegisterName();
-            register.getAllRegisters().get(registerName).setByValue(newValue);
-            LOG.info("Setting register {} to {}.", registerName, newValue);
-            update();
-        });
-
-        HashMap<String, Register> allRegisters =  register.getAllRegisters();
-        int index = 0;
-        for(String name : MachineRegisters.REG_NAMES) {
-            String indexStr = Integer.toString(index);
-            Register register = allRegisters.get(name);
-            String registerBinary = register.toString();
-            String registerDecimal = Integer.toString(register.value());
-            registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary, registerDecimal));
-            index += 1;
-        }
-        registerTableView.setItems(registerTableObservableList);
+        update();
     }
 
     public void appendToConsole(Integer ch) {
