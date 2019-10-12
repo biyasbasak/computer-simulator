@@ -205,7 +205,7 @@ public class CPU {
      */
     public void cycle() {
         if(halted) {
-            throw new CPUException(registers.pc(), "Machine halted");
+            throw new CPUException(registers.pc(), "Machine halted", true);
         }
 
         // 1. Fetch instruction
@@ -252,7 +252,9 @@ public class CPU {
             this.fault_handler(ex.isReservedAccess() ? 1 : 4);
         } catch(CPUException ex) {
             LOG.info("CPU fault: {}", ex.getMessage());
-            this.fault_handler(3);
+            if(!ex.isHalted()) {
+                this.fault_handler(3);
+            }
         }
     }
 

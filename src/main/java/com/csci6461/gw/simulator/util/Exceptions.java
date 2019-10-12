@@ -57,14 +57,25 @@ public class Exceptions {
     public static class CPUException extends SimulatorException {
         private int _pc;
 
+        private boolean _halted;
+
         public CPUException(int pc, String message) {
+            this(pc, message, halted);
+        }
+
+        public CPUException(int pc, String message, boolean halted) {
             super(message);
             _pc = pc;
+            _halted = halted;
         }
 
         @Override
         public String getMessage() {
             return String.format("[CPU] %s at PC %d", super.getMessage(), _pc);
+        }
+
+        public boolean isHalted() {
+            return _halted;
         }
     }
 
