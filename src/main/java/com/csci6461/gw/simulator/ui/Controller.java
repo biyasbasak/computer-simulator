@@ -175,14 +175,14 @@ public class Controller implements Initializable {
     }
 
     public void update() {
-        //registerTableView.getItems().clear();
-        //memoryTableView.getItems().clear();
+        registerTableView.getItems().clear();
+        memoryTableView.getItems().clear();
 
         // update memory
         for (int i = 0; i < 2048; i++) {
             Element memoryChunk = memory.fetch_direct(i);
             String j = String.valueOf(i);
-            memoryTableObservableList.set(i, new MemoryTable(j, memoryChunk.toString(), Integer.toString(memoryChunk.value())));
+            memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(), Integer.toString(memoryChunk.value())));
         }
 
         HashMap<String, Register> allRegisters =  register.getAllRegisters();
@@ -192,7 +192,7 @@ public class Controller implements Initializable {
             Register register = allRegisters.get(name);
             String registerBinary = register.toString();
             String registerDecimal = Integer.toString(register.value());
-            registerTableObservableList.set(index, new RegisterTable(indexStr, name, registerBinary, registerDecimal));
+            registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary, registerDecimal));
             index += 1;
         }
         
@@ -361,7 +361,6 @@ public class Controller implements Initializable {
                     cpu.commit(bufferQ);
                     input_cond.signalAll();
                     lock.unlock();
-                    keyEvent.consume();
                 }
             }
         });
@@ -372,7 +371,7 @@ public class Controller implements Initializable {
                 if(keyEvent.getCode() == KeyCode.ENTER || keyEvent.getCode() == KeyCode.BACK_SPACE) {
                     return;
                 }
-                
+
                 String ch = keyEvent.getCharacter();
                 if(ch.length() != 0) {
                     if(ch.charAt(0) != '\r') {
