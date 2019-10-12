@@ -177,6 +177,7 @@ public class Controller implements Initializable {
     public void update() {
         registerTableView.getItems().clear();
         memoryTableView.getItems().clear();
+        cacheTableView.getItems().clear();
 
         // update memory
         for (int i = 0; i < 2048; i++) {
@@ -185,15 +186,32 @@ public class Controller implements Initializable {
             memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(), Integer.toString(memoryChunk.value())));
         }
 
+        // update register
         HashMap<String, Register> allRegisters =  register.getAllRegisters();
-        int index = 0;
+        int idx = 0;
         for(String name : MachineRegisters.REG_NAMES) {
-            String indexStr = Integer.toString(index);
+            String indexStr = Integer.toString(idx);
             Register register = allRegisters.get(name);
             String registerBinary = register.toString();
             String registerDecimal = Integer.toString(register.value());
-            registerTableObservableList.add(index, new RegisterTable(indexStr, name, registerBinary, registerDecimal));
-            index += 1;
+            registerTableObservableList.add(idx, new RegisterTable(indexStr, name, registerBinary, registerDecimal));
+            idx += 1;
+        }
+
+        // update cache
+        int id = 0;
+        for(int index = 0; index < memory.getCache().lines(); index++) {
+            for(int offset = 0; offset < memory.getCache().getCacheLine(index).size(); offset++) {
+                Integer tag = memory.getCache().getCacheLine(index).tag();
+                if(tag == null) {
+                    cacheTableObservableList.add(id, new CacheTable(Integer.toString(index), "Not cached", Integer.toString(offset), "Not cached"));
+                } else if(!memory.getCache().getCacheLine(index).cached(tag, offset)) {
+                    cacheTableObservableList.add(id, new CacheTable(Integer.toString(index), Integer.toString(tag), Integer.toString(offset), "Not cached"));
+                } else {
+                    cacheTableObservableList.add(id, new CacheTable(Integer.toString(index), Integer.toString(tag), Integer.toString(offset), memory.getCache().getCacheLine(index).get(offset).toString()));
+                }
+                id += 1;
+            }
         }
         
         // flush output buffer
@@ -362,6 +380,12 @@ public class Controller implements Initializable {
         });
         registerTableView.setItems(registerTableObservableList);
 
+        cacheIndex.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Index"));
+        cacheTag.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Tag"));
+        cacheOffset.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Offset"));
+        cacheBinary.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("binary"));
+        cacheTableView.setItems(cacheTableObservableList);
+
         /* Simulate terminal behaviour */
         console.addEventFilter(KeyEvent.ANY, new EventHandler<KeyEvent>() {
             @Override
@@ -447,13 +471,5 @@ public class Controller implements Initializable {
     public void appendToLog(String msg) {
         logQ.addLast(msg);
         return;
-    }
-    
-    // cache initialization
-    public void initializeCache(){
-        cacheIndex.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Index"));
-        cacheTag.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Tag"));
-        cacheOffset.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("Offset"));
-        cacheBinary.setCellValueFactory(new PropertyValueFactory<CacheTable,String >("binary"));
     }
 }

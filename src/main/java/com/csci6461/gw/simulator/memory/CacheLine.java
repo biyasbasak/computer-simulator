@@ -54,6 +54,13 @@ public class CacheLine {
     }
 
     /**
+     * For UI purpose
+     */
+    public Element get(int offset) {
+        return caches[offset];
+    }
+
+    /**
      * Flush current cache line 
      */
     public void flush() {
@@ -103,5 +110,12 @@ public class CacheLine {
      */
     public int size() {
         return size;
+    }
+
+    /**
+     * Get tag 
+     */
+    public Integer tag() {
+        return this.tag;
     }
 }

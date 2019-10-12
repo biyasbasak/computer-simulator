@@ -49,6 +49,13 @@ public class Cache {
     }
 
     /**
+     * Get a cache line, for UI purpose
+     */
+    public CacheLine getCacheLine(int index) {
+        return caches[index];
+    }
+
+    /**
      * Combine an address from tag, index and offset
      */
     public int combineAddress(int tag, int index, int offset) {
@@ -103,5 +110,12 @@ public class Cache {
      */
     public int size() {
         return CACHE_LINES * CACHE_SIZE;
+    }
+
+    /**
+     * Get number of cache lines 
+     */
+    public int lines() {
+        return CACHE_LINES;
     }
 }
