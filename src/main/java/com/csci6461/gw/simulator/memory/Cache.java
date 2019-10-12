@@ -2,6 +2,7 @@ package com.csci6461.gw.simulator.memory;
 
 import org.apache.logging.log4j.Logger; 
 import org.apache.logging.log4j.LogManager; 
+import org.apache.logging.log4j.Level;
 
 import com.csci6461.gw.simulator.util.Element; 
 import static com.csci6461.gw.simulator.util.Exceptions.*;
@@ -93,7 +94,7 @@ public class Cache {
      */
     public void writeback(int tag, int index, int offset, Element element) {
         int address = combineAddress(tag, index, offset);
-        LOG.info("Writeback @{:04x}: {:04x}", address, element.value());
+        LOG.printf(Level.INFO, "Writeback @%04x: %04x", address, element.value());
         this.mem.store_direct(address, element);
     }
 

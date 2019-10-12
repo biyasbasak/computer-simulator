@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.KeyCode;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -201,9 +202,10 @@ public class Controller implements Initializable {
             t += (char)obufferQ.removeFirst().intValue();
         }
         console.setText(t);
+        console.positionCaret(t.length());
 
         // flush log buffer
-        System.out.println(logQ.size());
+        //System.out.println(logQ.size());
         while(logQ.size() >= 200) {     // remove redundant logs
             logQ.removeFirst();
         }
@@ -215,8 +217,7 @@ public class Controller implements Initializable {
             logFlow.getChildren().add(message);
         }
         logQ.clear();
-
-        System.out.println(logFlow.getChildren().size());
+        //System.out.println(logFlow.getChildren().size());
     }
 
     /**
@@ -318,6 +319,33 @@ public class Controller implements Initializable {
         LogPrinter.setScrollPane(scrollPane);
 
         /* Simulate terminal behaviour */
+        console.addEventFilter(KeyEvent.ANY, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                switch(keyEvent.getCode()) {
+                    case UP:
+                    case DOWN:
+                    case PAGE_UP:
+                    case PAGE_DOWN:
+                    case HOME:
+                    case END:
+                    case LEFT:
+                    case RIGHT:
+                    case TAB:
+                        keyEvent.consume();
+                        return;
+                }
+            }
+        });
+
+        console.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                console.positionCaret(console.getText().length());
+                return;
+            }
+        });
+
         console.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
