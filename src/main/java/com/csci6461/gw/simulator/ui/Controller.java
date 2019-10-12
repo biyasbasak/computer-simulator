@@ -361,6 +361,7 @@ public class Controller implements Initializable {
                     cpu.commit(bufferQ);
                     input_cond.signalAll();
                     lock.unlock();
+                    keyEvent.consume();
                 }
             }
         });
@@ -368,6 +369,10 @@ public class Controller implements Initializable {
         console.setOnKeyTyped(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
+                if(keyEvent.getCode() == KeyCode.ENTER || keyEvent.getCode() == KeyCode.BACK_SPACE) {
+                    return;
+                }
+                
                 String ch = keyEvent.getCharacter();
                 if(ch.length() != 0) {
                     if(ch.charAt(0) != '\r') {
