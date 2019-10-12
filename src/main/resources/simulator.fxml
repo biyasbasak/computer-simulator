@@ -95,12 +95,10 @@
                         <Font size="26.0" />
                      </font>
                   </Label>
-                  <Button fx:id="ipl" mnemonicParsing="false" onAction="#IPL" prefHeight="23.0" prefWidth="98.0" text="IPL" />
-                  <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="98.0" text="STOP">
+                  <Button fx:id="ipl" mnemonicParsing="false" onAction="#IPL" prefHeight="23.0" prefWidth="98.0" text="IPL">
                      <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Button>
+                        <Insets top="7.0" />
+                     </VBox.margin></Button>
                </children>
             </VBox>
             <Button fx:id="program1" mnemonicParsing="false" onAction="#runProgram1" prefHeight="23.0" prefWidth="97.0" text="Program 1">
@@ -120,7 +118,7 @@
                         <Insets left="70.0" top="10.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="51.0" text="Run" onAction="#runSim">
+                  <Button mnemonicParsing="false" onAction="#runSim" prefHeight="23.0" prefWidth="51.0" text="Run">
                      <VBox.margin>
                         <Insets left="70.0" top="15.0" />
                      </VBox.margin>
