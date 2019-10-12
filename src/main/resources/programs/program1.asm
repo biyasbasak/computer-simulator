@@ -2,7 +2,7 @@
 # Finding the nearest number
 
 !DEFINE SP, 9
-!DEFINE NUM, 5
+!DEFINE NUM, 20
 
 _START:
 # setup stack
