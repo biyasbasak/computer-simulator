@@ -303,6 +303,7 @@ public class Controller implements Initializable {
         register.initialize();
         cpu.initialize();
         LOG.info("Machine initialized on IPL");
+        update();
     }
 
     /**
@@ -404,6 +405,13 @@ public class Controller implements Initializable {
                     cpu.commit(bufferQ);
                     input_cond.signalAll();
                     lock.unlock();
+
+                    System.out.println("Enter triggered!");
+
+                    String t = console.getText();
+                    t += "\n";
+                    console.setText(t);
+                    keyEvent.consume();
                 }
             }
         });
