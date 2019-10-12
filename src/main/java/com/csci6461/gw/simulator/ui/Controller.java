@@ -314,6 +314,16 @@ public class Controller implements Initializable {
         LOG.info("Machine initialized on IPL");
         update();
     }
+    // config the Halt button
+    @FXML
+    private Button halt;
+    @FXML
+    public void HALT(){
+        cpu.halt();
+        LOG.info("machine halt on HALT");
+        update();
+    }
+
 
     /**
      * Initialization on starting the application

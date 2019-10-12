@@ -60,7 +60,7 @@ public class Exceptions {
         private boolean _halted;
 
         public CPUException(int pc, String message) {
-            this(pc, message, halted);
+            this(pc, message, false);
         }
 
         public CPUException(int pc, String message, boolean halted) {
