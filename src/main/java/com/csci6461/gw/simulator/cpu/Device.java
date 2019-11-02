@@ -21,6 +21,11 @@ public abstract class Device {
      */
     public abstract void output(Element elem);
 
+    /**
+     * Device check
+     */
+    public abstract boolean check();
+
     public int devid() {
         return device_id;
     }

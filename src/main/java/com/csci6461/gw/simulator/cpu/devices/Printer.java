@@ -29,15 +29,13 @@ public class Printer extends Device {
     public void output(Element elem) {
         int value = elem.uvalue();  // prevent from using reference
         LOG.info("Writing to printer: {}", value);
-
-        /*
-        // It's too much of a burden....
-        Platform.runLater(() -> {
-            ctrler.appendToConsole(value);
-        });
-        */
         ctrler.appendToConsole(value);
         return;
+    }
+
+    @Override
+    public boolean check() {
+        return true;
     }
 }
 

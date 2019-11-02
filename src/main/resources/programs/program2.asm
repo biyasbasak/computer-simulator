@@ -1,0 +1,355 @@
+# program 2 for project part 3
+
+!DEFINE SP, 9
+!DEFINE NUM, 6
+!DEFINE BUFFER, 0x620
+!DEFINE WORD, 0x600
+
+_START:
+# setup stack
+!ORG 0x100
+!LDR R0, 0x7ff
+STR R0, X0, SP
+
+# setup index registers
+!LDX X1, 0x480
+
+# read sentences
+!LDR R2, BUFFER
+!LDR R3, NUM
+_READS:
+!PUSH R3
+!PUSH R2
+!LDR R2, PROMPT
+!CALL PRINTS
+!POP R2
+!CALL READLN
+!MOV R2, R1
+!POP R3
+SIR R3, 1
+!LDR R0, _READWORD
+STR R0, X0, 31
+JZ R3, X0, 31, I
+!JMP _READS
+
+# read word
+_READWORD:
+!LDR R2, PROMPT2
+!CALL PRINTS
+!LDR R2, WORD
+!CALL READLN
+
+# find word in sentences
+!LDR R1, BUFFER
+LDA R3, X0, 0
+LDA R2, X0, 0
+
+# r2 = word count, r3 = sentence count, r1 = pointer
+_PLOOP:
+!PUSH R3
+!PUSH R2
+!PUSH R1
+
+# compare word
+!LDR R2, WORD
+!CALL STREQU
+!LDR R0, _NWRD
+STR R0, X0, 31
+JZ R1, X0, 31, I
+!JMP _RSLT
+
+_NWRD:
+!POP R1
+!PUSH R1
+!MOV R2, R1
+!CALL NEXTWRD
+
+!LDR R0, _SEND
+STR R0, X0, 31
+JZ R1, X0, 31, I
+
+# update ptr
+!POP R2
+!PUSH R1
+!POP R1
+!POP R2
+AIR R2, 1
+!POP R3
+!JMP _PLOOP
+
+_SEND:
+!POP R1
+!POP R2
+!POP R3
+
+AIR R3, 1
+!LDR R2, NUM
+STR R3, X0, 31
+SMR R2, X0, 31
+!LDR R0, _NRSLT
+STR R0, X0, 31
+JZ R2, X0, 31, I
+
+# update ptr
+!PUSH R3
+!PUSH R1
+!MOV R2, R1
+!CALL STRLEN
+!POP R2
+STR R1, X0, 31
+AMR R2, X0, 31
+AIR R2, 1
+!MOV R1, R2
+!POP R3
+LDA R2, X0, 0
+!JMP _PLOOP
+
+# found, print result
+_RSLT:
+!LDR R2, PROMPTR
+!CALL PRINTS
+!CALL PRINTLN
+!LDR R2, PROMPTS
+!CALL PRINTS
+!POP R1
+!POP R2
+!POP R3
+!PUSH R2
+!MOV R2, R3
+AIR R2, 1
+!CALL PRINTI
+!CALL PRINTLN
+!LDR R2, PROMPTW
+!CALL PRINTS
+!POP R2
+AIR R2, 1
+!CALL PRINTI
+!CALL PRINTLN
+!JMP _HALT
+
+# not found, print result
+_NRSLT:
+!LDR R2, PROMPTN
+!CALL PRINTS
+!CALL PRINTLN
+!JMP _HALT
+
+# program halts
+_HALT:
+HLT 
+
+# read character, r1 = returned char, 0 if it's below 0x20
+READC:
+!PUSH R3
+IN R1, 0
+!MOV R2, R1
+!LDR R0, 0x20
+STR R0, X0, 31
+SMR R2, X0, 31
+!LDR R0, _L2
+STR R0, X0, 31
+JGE R2, X0, 31, I
+# invalid char
+LDA R1, X0, 0
+_L2:
+!POP R3
+RFS 0
+
+# read line, r2 = buffer address, r1 = returned address
+# CAUTION: This is equivalent to C gets, which introduces security risks.
+READLN:
+!PUSH R3
+_L0:
+!PUSH R2
+!CALL READC
+!POP R2
+# exit if it's not a char
+!LDR R0, _L1
+STR R0, X0, 31
+JZ R1, X0, 31, I
+STR R2, X0, 31
+STR R1, X0, 31, I
+AIR R2, 1
+!JMP _L0
+_L1:
+# store nul-byte
+STR R2, X0, 31
+LDA R0, X0, 0
+STR R0, X0, 31, I
+AIR R2, 1
+!MOV R1, R2
+!POP R3
+RFS 0
+
+# print a number, R2 = number
+PRINTI:
+!PUSH R3
+LDA R1, X0, 0
+_LOOPP:
+LDA R0, X0, 10
+DVD R2, R0 
+!LDR R0, 0x30
+STR R0, X0, 31
+AMR R3, X0, 31
+!PUSH R3
+AIR R1, 1
+!LDR R0, _PP
+STR R0, X0, 31
+JZ R2, X0, 31, I
+!JMP _LOOPP
+_PP:
+!POP R3
+OUT R3, 1
+SIR R1, 1
+!LDR R0, _FINP
+STR R0, X0, 31
+JZ R1, X0, 31, I
+!JMP _PP
+_FINP:
+!POP R3
+RFS 0
+
+# print a string, R2 = string address
+PRINTS:
+!PUSH R3
+LOOP:
+STR R2, X0, 31
+LDR R1, X0, 31, I
+!LDR R0, FINISH
+STR R0, X0, 31
+JZ R1, X0, 31, I
+OUT R1, 1
+AIR R2, 1
+!LDR R0, LOOP
+STR R0, X0, 31
+JMA X0, 31, I
+FINISH:
+!POP R3
+RFS 0
+
+# print a newline, '\r\n'
+PRINTLN:
+!PUSH R3
+LDA R0, X0, 13
+OUT R0, 1
+LDA R0, X0, 10
+OUT R0, 1
+!POP R3
+RFS 0
+
+# print a number, R2 = number
+PRINTI:
+!PUSH R3
+LDA R1, X0, 0
+_LOOPP:
+LDA R0, X0, 10
+DVD R2, R0
+!LDR R0, 0x30
+STR R0, X0, 31
+AMR R3, X0, 31
+!PUSH R3
+AIR R1, 1
+!LDR R0, _PP
+STR R0, X0, 31
+JZ R2, X0, 31, I
+!JMP _LOOPP
+_PP:
+!POP R3
+OUT R3, 1
+SIR R1, 1
+!LDR R0, _FINP
+STR R0, X0, 31
+JZ R1, X0, 31, I
+!JMP _PP
+_FINP:
+!POP R3
+RFS 0
+
+# strlen, R1 = length, R2 = str address
+STRLEN:
+!PUSH R3
+LDA R1, X0, 0
+_LA:
+STR R2, X0, 31
+LDR R3, X0, 31, I
+!LDR R0, _LF
+STR R0, X0, 31
+JZ R3, X0, 31, I
+AIR R2, 1
+AIR R1, 1
+!JMP _LA
+_LF:
+!POP R3
+RFS 0
+
+# compare string, R1 [in] = str1, R2 = str2, R1 [out] = equality
+STREQU:
+!PUSH R3
+_CMPLOOP:
+STR R2, X0, 31
+LDR R3, X0, 31, I
+!LDR R0, _SEQ
+STR R0, X0, 31
+JZ R3, X0, 31, I
+STR R1, X0, 31
+SMR R3, X0, 31, I
+!LDR R0, _SNEQ
+STR R0, X0, 31
+JNE R3, X0, 31, I
+AIR R1, 1
+AIR R2, 1
+!JMP _CMPLOOP
+_SEQ:
+LDA R1, X0, 1
+!JMP _FINSE
+_SNEQ:
+LDA R1, X0, 0
+_FINSE:
+!POP R3
+RFS 0
+
+# get next word start address, R2 = p, R1 = ret
+NEXTWRD:
+!PUSH R3
+_WRDLOOP:
+STR R2, X0, 31
+LDR R3, X0, 31, I
+!LDR R0, _WEND
+STR R0, X0, 31
+JZ R3, X0, 31, I
+!LDR R0, 0x20
+STR R0, X0, 31
+SMR R3, X0, 31
+!LDR R0, _WORD
+STR R0, X0, 31
+JZ R3, X0, 31, I
+AIR R2, 1
+!JMP _WRDLOOP
+_WEND:
+LDA R1, X0, 0
+!JMP _FIN
+_WORD:
+!MOV R1, R2
+AIR R1, 1
+_FIN:
+!POP R3
+RFS 0
+
+PROMPT:
+!ASCIZ "Enter sentence:"
+
+PROMPT2:
+!ASCIZ "Enter word:"
+
+PROMPTN:
+!ASCIZ "Not found"
+
+PROMPTR:
+!ASCIZ "Found!"
+
+PROMPTS:
+!ASCIZ "Sentence: #"
+
+PROMPTW:
+!ASCIZ "Word: #"
+

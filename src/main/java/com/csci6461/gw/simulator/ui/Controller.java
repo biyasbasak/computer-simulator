@@ -280,6 +280,26 @@ public class Controller implements Initializable {
     }
 
     @FXML
+    private Button program2;
+
+    @FXML
+    private void runProgram2() {
+        InputStream file = getClass().getResourceAsStream("/programs/program2.asm");
+
+        try {
+            String assembly = new String(readAllBytes(file));
+            Assembler asm = new Assembler();
+            String[] program = asm.assemble(assembly);
+            cpu.loadProgram(program);
+        } catch(IOException ex) {
+            LOG.error("Error reading program2.asm: {}", ex.getMessage());
+            ex.printStackTrace();
+        }
+        LOG.info("Program2 loaded.");
+        update();
+    }
+
+    @FXML
     private void runSim() {
         class CPURunTask implements Runnable {
             Controller ctrl;

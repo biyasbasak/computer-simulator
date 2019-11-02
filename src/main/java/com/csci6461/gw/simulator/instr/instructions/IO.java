@@ -39,4 +39,21 @@ public abstract class IO {
             registers.advance();
         }
     }
+
+    public static class CHK extends Instruction {
+        @Override
+        public void execute(CPU cpu, Memory memory, MachineRegisters registers) {
+            HashMap<String, String> instruction = this.getInstruction();
+            int devid = Integer.parseInt(instruction.get("DevID"), 2);
+            int cc = Integer.parseInt(instruction.get("reg"), 2);
+            Register c = registers.getAllRegisters().get("CC");
+            if(cpu.check(devid)) {
+                c.set(cc);
+            } else {
+                c.clear(cc);
+            }
+            LOG.info("CHK: {} = {}", devid, c.toString());
+            registers.advance();
+        }
+    }
 }

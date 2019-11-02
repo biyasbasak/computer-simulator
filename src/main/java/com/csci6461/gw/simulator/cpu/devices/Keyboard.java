@@ -58,4 +58,9 @@ public class Keyboard extends Device {
         LOG.info("Output to keyboard: {}", elem.uvalue());
         return;
     }
+
+    @Override
+    public boolean check() {
+        return buffer.size() == 0;
+    }
 }

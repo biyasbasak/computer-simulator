@@ -174,6 +174,9 @@ public class CPU {
             case 062:
                 ins = new OUT();
                 break;
+            case 063:
+                ins = new CHK();
+                break;
             default:
                 throw new CPUException(registers.pc(), "Unknown opcode");
         }
@@ -321,5 +324,16 @@ public class CPU {
             return;
         }
         dev.output(elem);
+    }
+
+    /**
+     * Check device status
+     */
+    public boolean check(int devid) {
+        Device dev = devices.get(devid);
+        if(dev == null) {
+            return false;
+        }
+        return dev.check();
     }
 }
