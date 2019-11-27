@@ -61,6 +61,8 @@ public class Controller implements Initializable {
     // config the decimal table of Memory table
     @FXML
     private TableColumn<MemoryTable, String> memoryDecimal;
+    @FXML
+    private TableColumn<MemoryTable, String> memoryFloating;
 
     // creat a "observablelist" object to present memory data
     private ObservableList<MemoryTable> memoryTableObservableList = FXCollections.observableArrayList();
@@ -88,7 +90,7 @@ public class Controller implements Initializable {
     private Cache cache = memory.getCache();
 
     /**
-     * This is the Memory tableview configuration
+     * This is register tableview configuration
      */
     @FXML
     private TableView<RegisterTable> registerTableView;
@@ -100,6 +102,8 @@ public class Controller implements Initializable {
     private TableColumn<RegisterTable, String> registerBinary;
     @FXML
     private TableColumn<RegisterTable, String> registerDecimal;
+    @FXML
+    private TableColumn<RegisterTable, String> registerFloating;
 
     private ObservableList<RegisterTable> registerTableObservableList = FXCollections.observableArrayList(
             );
@@ -174,7 +178,8 @@ public class Controller implements Initializable {
         for (int i = 0; i < 2048; i++) {
             Element memoryChunk = memory.fetch_direct(i);
             String j = String.valueOf(i);
-            memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(), Integer.toString(memoryChunk.value())));
+           // memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(), Integer.toString(memoryChunk.value())));
+            memoryTableObservableList.add(0, new MemoryTable("1","2","3","4"));
         }
 
         // update register
@@ -185,7 +190,8 @@ public class Controller implements Initializable {
             Register register = allRegisters.get(name);
             String registerBinary = register.toString();
             String registerDecimal = Integer.toString(register.value());
-            registerTableObservableList.add(idx, new RegisterTable(indexStr, name, registerBinary, registerDecimal));
+            //registerTableObservableList.add(idx, new RegisterTable(indexStr, name, registerBinary, registerDecimal, registerFloating));
+            registerTableObservableList.add(0, new RegisterTable("1","1","1","1","1"));
             idx += 1;
         }
 
@@ -343,6 +349,13 @@ public class Controller implements Initializable {
         LOG.info("machine halt on HALT");
         update();
     }
+    // config the testFloating Button
+    @FXML Button testFloating;
+    // action on clicking the testFloating Button
+    @FXML
+    public void testFloating(){
+        System.out.println("testfloating");
+    }
 
 
     /**
@@ -355,7 +368,8 @@ public class Controller implements Initializable {
         memoryId.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryId"));
         memoryBinary.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryBinary"));
         memoryDecimal.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryDecimal"));
-
+        memoryFloating.setCellValueFactory(new PropertyValueFactory<MemoryTable, String>("memoryFloating"));
+        // set memory binary column editable
         memoryBinary.setCellFactory(TextFieldTableCell.forTableColumn());
         memoryBinary.setOnEditCommit((TableColumn.CellEditEvent<MemoryTable, String> t) -> {
             MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
@@ -366,6 +380,7 @@ public class Controller implements Initializable {
             update();
         });
 
+        // set memory decimal column editable
         memoryDecimal.setCellFactory(TextFieldTableCell.forTableColumn());
         memoryDecimal.setOnEditCommit((TableColumn.CellEditEvent<MemoryTable, String> t) -> {
             MemoryTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());
@@ -388,6 +403,7 @@ public class Controller implements Initializable {
         registerId.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerId"));
         registerName.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerName"));
         registerBinary.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerBinary"));
+        registerFloating.setCellValueFactory(new PropertyValueFactory<RegisterTable,String>("registerFloating"));
         registerBinary.setCellFactory(TextFieldTableCell.forTableColumn());
         registerBinary.setOnEditCommit((TableColumn.CellEditEvent<RegisterTable, String> t) -> {
             RegisterTable registerChange = t.getTableView().getItems().get(t.getTablePosition().getRow());

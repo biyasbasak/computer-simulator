@@ -36,10 +36,11 @@
          <center>
             <TableView fx:id="registerTableView" editable="true" prefHeight="372.0" prefWidth="537.0" BorderPane.alignment="CENTER">
                <columns>
-                  <TableColumn fx:id="registerId" editable="false" prefWidth="44.0" text="id" />
-                  <TableColumn fx:id="registerName" editable="false" prefWidth="140.0" text="Register Name" />
-                  <TableColumn fx:id="registerBinary" prefWidth="240.0" text="binary" />
-                  <TableColumn fx:id="registerDecimal" prefWidth="174.0" text="decimal" />
+                  <TableColumn fx:id="registerId" editable="false" prefWidth="50.0" text="id" />
+                  <TableColumn fx:id="registerName" editable="false" prefWidth="113.0" text="Register Name" />
+                  <TableColumn fx:id="registerBinary" prefWidth="138.0" text="binary" />
+                  <TableColumn fx:id="registerDecimal" prefWidth="114.0" text="decimal" />
+                  <TableColumn fx:id="registerFloating" minWidth="0.0" prefWidth="184.0" text="floating" />
                </columns>
             </TableView>
          </center>
@@ -64,8 +65,9 @@
                         <TableView fx:id="memoryTableView" editable="true" prefHeight="372.0" prefWidth="505.0">
                            <columns>
                               <TableColumn fx:id="memoryId" editable="false" prefWidth="65.0" text="id" />
-                              <TableColumn fx:id="memoryBinary" minWidth="0.0" prefWidth="389.0" text="binary" />
-                              <TableColumn fx:id="memoryDecimal" prefWidth="145.0" text="decimal" />
+                              <TableColumn fx:id="memoryBinary" minWidth="0.0" prefWidth="141.0" text="binary" />
+                              <TableColumn fx:id="memoryDecimal" prefWidth="99.0" text="decimal" />
+                              <TableColumn fx:id="memoryFloating" prefWidth="315.0" text="floating" />
                            </columns>
                         </TableView>
                      </content>
@@ -88,7 +90,7 @@
       </BorderPane>
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
-            <VBox prefHeight="109.0" prefWidth="135.0">
+            <VBox prefHeight="109.0" prefWidth="103.0">
                <children>
                   <Label text="Switch">
                      <font>
@@ -106,26 +108,31 @@
                   <Insets left="15.0" top="40.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="100.0" text="Program2" fx:id="program2" onAction="#runProgram2">
+            <Button fx:id="program2" mnemonicParsing="false" onAction="#runProgram2" prefHeight="23.0" prefWidth="100.0" text="Program2">
                <HBox.margin>
-                  <Insets left="40.0" top="40.0" />
+                  <Insets left="20.0" top="40.0" />
                </HBox.margin>
             </Button>
-            <VBox prefHeight="116.0" prefWidth="183.0">
+            <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="109.0" text="FloatingTest" onAction="#testFloating">
+               <HBox.margin>
+                  <Insets left="20.0" top="40.0" />
+               </HBox.margin>
+            </Button>
+            <VBox prefHeight="109.0" prefWidth="134.0">
                <children>
                   <Button fx:id="stepButton" mnemonicParsing="false" onAction="#step" prefHeight="23.0" prefWidth="52.0" text="Step">
                      <VBox.margin>
-                        <Insets left="70.0" top="10.0" />
+                        <Insets left="50.0" top="10.0" />
                      </VBox.margin>
                   </Button>
                   <Button mnemonicParsing="false" onAction="#runSim" prefHeight="23.0" prefWidth="51.0" text="Run">
                      <VBox.margin>
-                        <Insets left="70.0" top="15.0" />
+                        <Insets left="50.0" top="15.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="52.0" text="Halt" fx:id="halt" onAction="#HALT">
+                  <Button fx:id="halt" mnemonicParsing="false" onAction="#HALT" prefHeight="23.0" prefWidth="52.0" text="Halt">
                      <VBox.margin>
-                        <Insets left="70.0" top="15.0" />
+                        <Insets left="50.0" top="15.0" />
                      </VBox.margin>
                   </Button>
                </children>
