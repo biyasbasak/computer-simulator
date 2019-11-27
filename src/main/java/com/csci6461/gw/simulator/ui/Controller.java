@@ -178,8 +178,7 @@ public class Controller implements Initializable {
         for (int i = 0; i < 2048; i++) {
             Element memoryChunk = memory.fetch_direct(i);
             String j = String.valueOf(i);
-           // memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(), Integer.toString(memoryChunk.value())));
-            memoryTableObservableList.add(0, new MemoryTable("1","2","3","4"));
+           memoryTableObservableList.add(i, new MemoryTable(j, memoryChunk.toString(), Integer.toString(memoryChunk.value()), Double.toString(memoryChunk.fvalue())));
         }
 
         // update register
@@ -190,8 +189,8 @@ public class Controller implements Initializable {
             Register register = allRegisters.get(name);
             String registerBinary = register.toString();
             String registerDecimal = Integer.toString(register.value());
-            //registerTableObservableList.add(idx, new RegisterTable(indexStr, name, registerBinary, registerDecimal, registerFloating));
-            registerTableObservableList.add(0, new RegisterTable("1","1","1","1","1"));
+            String registerFloating = Double.toString(register.fvalue());
+            registerTableObservableList.add(idx, new RegisterTable(indexStr, name, registerBinary, registerDecimal, registerFloating));
             idx += 1;
         }
 
@@ -354,7 +353,19 @@ public class Controller implements Initializable {
     // action on clicking the testFloating Button
     @FXML
     public void testFloating(){
-        System.out.println("testfloating");
+        InputStream file = getClass().getResourceAsStream("/programs/floating.asm");
+
+        try {
+            String assembly = new String(readAllBytes(file));
+            Assembler asm = new Assembler();
+            String[] program = asm.assemble(assembly);
+            cpu.loadProgram(program);
+        } catch(IOException ex) {
+            LOG.error("Error reading program2.asm: {}", ex.getMessage());
+            ex.printStackTrace();
+        }
+        LOG.info("Program2 loaded.");
+        update();
     }
 
 

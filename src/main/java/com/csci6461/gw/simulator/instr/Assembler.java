@@ -56,8 +56,8 @@ public class Assembler {
         put("CHK", 51);
         put("FADD", 27);
         put("FSUB", 28);
-        put("VADD", 29);
-        put("VSUB", 30);
+        put("VADD", 043);
+        put("VSUB", 044);
         put("CNVRT", 31);
         put("LDFR", 40);
         put("STFR", 41);
@@ -399,10 +399,12 @@ public class Assembler {
      */
     private int regNameToIndex(int lineno, String name) throws AssemblerException {
         switch(name) {
+            case "FR0":
             case "R0":
             case "X0":
             case "0":
                 return 0;
+            case "FR1":
             case "R1":
             case "X1":
             case "1":
@@ -482,7 +484,6 @@ public class Assembler {
         int trapco;
 
         // append operands according to instruction format
-        // TODO: Add every instruction
         switch(mnenomic) {
             case "HLT":
                 result += "0000000000";
@@ -501,6 +502,13 @@ public class Assembler {
             case "JGE":
             case "AMR":
             case "SMR":
+            case "FADD":
+            case "FSUB":
+            case "VADD":
+            case "VSUB":
+            case "CNVRT":
+            case "LDFR":
+            case "STFR":
                 gr = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
                 xr = regNameToIndex(lineno, readUntil(scan, ',').toUpperCase());
                 address = translateLabel(lineno, readUntil(scan, ','));

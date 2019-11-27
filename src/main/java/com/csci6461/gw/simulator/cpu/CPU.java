@@ -13,6 +13,7 @@ import static com.csci6461.gw.simulator.instr.instructions.LoadStore.*;
 import static com.csci6461.gw.simulator.instr.instructions.Arithmetic.*;
 import static com.csci6461.gw.simulator.instr.instructions.IO.*;
 import static com.csci6461.gw.simulator.instr.instructions.Miscellaneous.*;
+import static com.csci6461.gw.simulator.instr.instructions.FloatingPoint.*;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -176,6 +177,27 @@ public class CPU {
                 break;
             case 063:
                 ins = new CHK();
+                break;
+            case 033:
+                ins = new FADD();
+                break;
+            case 034:
+                ins = new FSUB();
+                break;
+            case 043:
+                ins = new VADD();
+                break;
+            case 044:
+                ins = new VSUB();
+                break;
+            case 037:
+                ins = new CNVRT();
+                break;
+            case 050:
+                ins = new LDFR();
+                break;
+            case 051:
+                ins = new STFR();
                 break;
             default:
                 throw new CPUException(registers.pc(), "Unknown opcode");

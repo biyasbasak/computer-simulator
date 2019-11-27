@@ -316,4 +316,38 @@ public class ALU {
         }
         return result;
     }
+
+    /**
+     * FP addition
+     */
+    public Element fadd(Element addend1, Element addend2, boolean cc) {
+        Element result = Element.fromString(ZERO);
+        double f1 = addend1.fvalue();
+        double f2 = addend2.fvalue();
+        result.setByFValue(f1 + f2);
+
+        if(cc) {
+            if(result.fvalue() == Double.NaN) {
+                updateCC(true, false, false, false);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * FP subtraction 
+     */
+    public Element fsub(Element minuend, Element subtrahend, boolean cc) {
+        Element result = Element.fromString(ZERO);
+        double f1 = minuend.fvalue();
+        double f2 = subtrahend.fvalue();
+        result.setByFValue(f1 - f2);
+
+        if(cc) {
+            if(result.fvalue() == Double.NaN) {
+                updateCC(false, true, false, false);
+            }
+        }
+        return result;
+    }
 }

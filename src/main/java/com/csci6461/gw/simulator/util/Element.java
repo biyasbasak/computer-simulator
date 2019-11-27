@@ -83,6 +83,13 @@ public class Element extends BitSet {
     }
 
     /**
+     * Get the floating point representation of the element.
+     */
+    public double fvalue() {
+        return BitOperations.bitsToFloat(this);
+    }
+
+    /**
      * Replace the element.
      */
     public void set(BitSet s) {
@@ -103,6 +110,13 @@ public class Element extends BitSet {
      */
     public void setByValue(int value) {
         this.set(BitOperations.intToBits(value, _nbits, true));
+    }
+
+    /**
+     * Set a element by its FP representation.
+     */
+    public void setByFValue(double value) {
+        this.set(BitOperations.floatToBits(value));
     }
 
     /**

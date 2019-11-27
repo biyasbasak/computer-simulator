@@ -15,13 +15,16 @@ public class MachineRegisters {
     public static final int GR_BITS = 16;
     public static final int IX_COUNT = 4;
     public static final int IX_BITS = 16;
+    public static final int FP_COUNT = 2;
+    public static final int FP_BITS = 16;
 
     // General registers & index register names
     public static final String GR_NAMES[] = { "R0", "R1", "R2", "R3" };
     public static final String IX_NAMES[] = { "X0", "X1", "X2", "X3" };
+    public static final String FP_NAMES[] = { "FR0", "FR1" };
 
     // Register names
-    public static final String REG_NAMES[] = { "R0", "R1", "R2", "R3", "PC", "CC", "IR", "MAR", "MBR", "MFR", "X1", "X2", "X3" };
+    public static final String REG_NAMES[] = { "R0", "R1", "R2", "R3", "PC", "CC", "IR", "MAR", "MBR", "MFR", "X1", "X2", "X3", "FR0", "FR1" };
 
     /**
      * General registers
@@ -32,6 +35,11 @@ public class MachineRegisters {
      * Index registers
      */
     private Register _IX[];
+
+    /**
+     * FP registers 
+     */
+    private Register _FP[];
 
     /**
      * Hashmap for simplicity
@@ -65,6 +73,13 @@ public class MachineRegisters {
             _IX[i] = new Register(IX_NAMES[i], IX_BITS);
             _Regs.put(IX_NAMES[i], _IX[i]);
         }
+
+        // fp registers
+        _FP = new Register[FP_COUNT];
+        for(int i = 0; i < FP_COUNT; i++) {
+            _FP[i] = new Register(FP_NAMES[i], FP_BITS);
+            _Regs.put(FP_NAMES[i], _FP[i]);
+        }
      
         // special registers
         _Regs.put("PC", new Register("PC", 12));
@@ -87,6 +102,13 @@ public class MachineRegisters {
      */
     public Register getIndexRegister(int index) {
         return _IX[index];
+    }
+
+    /**
+     * Get FR 
+     */
+    public Register getFPRegister(int index) {
+        return _FP[index];
     }
 
     /**

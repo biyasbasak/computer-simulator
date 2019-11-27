@@ -39,5 +39,15 @@ public class ElementTest {
         w.set(b);
         assertTrue(w.value() == -87);
     }
+
+    @Test
+    public void testFP() {
+        Element w = new Element(16);
+        w.set(0);
+        for(int i = 2; i <= 7; i++) {
+            w.set(i);
+        }
+        assertTrue(w.fvalue() == -1.0);
+    }
 }
 

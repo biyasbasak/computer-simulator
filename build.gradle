@@ -31,3 +31,8 @@ jar {
   }
 }
 
+test {
+  testLogging {
+    showStandardStreams = true
+  }
+}

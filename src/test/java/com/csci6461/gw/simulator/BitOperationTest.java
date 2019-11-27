@@ -79,5 +79,13 @@ public class BitOperationTest {
         }
         assertFalse(r.get(15));
     }
+
+    @Test
+    public void testF2B() {
+        double f = 0.75;
+        BitSet r = BitOperations.floatToBits(f);
+        System.out.println(r.toString());
+        System.out.println(BitOperations.bitsToFloat(r));
+    }
 }
 
